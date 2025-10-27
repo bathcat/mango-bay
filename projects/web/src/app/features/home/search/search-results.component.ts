@@ -1,62 +1,66 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { SearchInputComponent } from './search-input.component';
-import { Observable, map } from 'rxjs';
 import { EmptyStateComponent } from '@app/shared/ui/empty-state.component';
+import { LoadableDirective } from '@app/shared/loadable';
+import { SearchStateService } from './search-state.service';
 
 @Component({
   selector: 'mbc-search-results',
   standalone: true,
+  providers: [SearchStateService],
   imports: [
     CommonModule,
     MatCardModule,
     MatDividerModule,
     SearchInputComponent,
     EmptyStateComponent,
+    LoadableDirective,
   ],
   template: `
     <div class="search-header">
-      <mbc-search-input [initialQuery]="(searchQuery$ | async) || ''" />
+      <mbc-search-input [initialQuery]="(state.searchTerm$ | async) || ''" />
     </div>
 
-    @if (searchQuery$ | async; as query) {
-      <div class="search-info">
-        <p class="search-terms">Search results for: "{{ query }}"</p>
-      </div>
-
-      <div class="results-list">
-        @for (result of skeletonResults; track $index) {
-          <mat-card class="result-card">
-            <mat-card-content>
-              <div class="result-title skeleton-line skeleton-title"></div>
-              <div class="result-url skeleton-line skeleton-url"></div>
-              <div class="result-description">
-                <div class="skeleton-line skeleton-desc-line"></div>
-                <div class="skeleton-line skeleton-desc-line"></div>
-                <div class="skeleton-line skeleton-desc-line short"></div>
-              </div>
-            </mat-card-content>
-          </mat-card>
-        }
-      </div>
-    } @else {
+    @if ((state.searchTerm$ | async) === '') {
       <mbc-empty-state>
         <h2>Search Mango Bay Cargo</h2>
         <p>Find deliveries, pilots, sites, and more</p>
       </mbc-empty-state>
     }
+
+    @if ((state.searchTerm$ | async); as query) {
+      <div class="search-info">
+        <p class="search-terms">Search results for: "{{ query }}"</p>
+      </div>
+
+      <div *mbcLoadable="state.results$ as results; errorMessage: 'Failed to load search results'">
+        @if ($any(results).length === 0) {
+          <mbc-empty-state>
+            <p>No results found matching your search.</p>
+            <p>Try a different search term.</p>
+          </mbc-empty-state>
+        }
+
+        @if ($any(results).length > 0) {
+          <div class="results-list">
+            @for (result of $any(results); track result.url) {
+              <mat-card class="result-card">
+                <mat-card-content>
+                  <h3 class="result-title">{{ result.title }}</h3>
+                  <div class="result-url">{{ result.url }}</div>
+                  <p class="result-description">{{ result.description }}</p>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        }
+      </div>
+    }
   `,
 })
 export class SearchResultsComponent {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  
-  searchQuery$: Observable<string> = this.route.queryParams.pipe(
-    map(params => params['q'] || '')
-  );
-  
-  skeletonResults = Array(5).fill(null);
+  public readonly state = inject(SearchStateService);
 }

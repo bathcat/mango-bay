@@ -10,9 +10,8 @@
     <!-- 
       CSP Rules Explained:
       - default-src 'self': Default policy for all resource types (same origin only)
-      - script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:4200: 
+      - script-src 'self' 'unsafe-eval' http://localhost:4200: 
         * 'self': Allow scripts from same origin
-        * 'unsafe-inline': Allow inline scripts (dangerous but needed for Angular dev)
         * 'unsafe-eval': Allow eval() (needed for Angular development mode)
         * http://localhost:4200: Allow scripts from UI server
       - style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:4200:
@@ -37,7 +36,7 @@
     -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:4200;
+      script-src 'self' 'unsafe-eval' http://localhost:4200;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:4200;
       font-src 'self' https://fonts.gstatic.com http://localhost:4200;
       img-src 'self' data: blob: http://localhost:4200 http://localhost:5110;
