@@ -148,27 +148,7 @@ public class DeliveryStore : IDeliveryStore
         }
 
         using var command = connection.CreateCommand();
-        command.CommandText = "EXEC SearchDeliveriesByCargoDescription @CustomerId, @SearchTerm, @Skip, @Take";
-
-        var customerIdParam = command.CreateParameter();
-        customerIdParam.ParameterName = "@CustomerId";
-        customerIdParam.Value = customerId;
-        command.Parameters.Add(customerIdParam);
-
-        var searchTermParam = command.CreateParameter();
-        searchTermParam.ParameterName = "@SearchTerm";
-        searchTermParam.Value = searchTerm ?? string.Empty;
-        command.Parameters.Add(searchTermParam);
-
-        var skipParam = command.CreateParameter();
-        skipParam.ParameterName = "@Skip";
-        skipParam.Value = skip;
-        command.Parameters.Add(skipParam);
-
-        var takeParam = command.CreateParameter();
-        takeParam.ParameterName = "@Take";
-        takeParam.Value = take;
-        command.Parameters.Add(takeParam);
+        command.CommandText = $"EXEC SearchDeliveriesByCargoDescription '{customerId}', '{searchTerm ?? string.Empty}', {skip}, {take}";
 
         using var reader = await command.ExecuteReaderAsync();
 
