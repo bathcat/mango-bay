@@ -1,0 +1,54 @@
+<mbc-edit-confirm-dialog
+  [title]="getTitle()"
+  [subtitle]="getSubtitle()"
+  editStepLabel="Rate & Review"
+  previewStepLabel="Preview & Submit"
+  [submitButtonText]="getSubmitButtonText()"
+  [loadingText]="getLoadingText()"
+  [canProceed]="canProceed"
+  [isLoading]="isLoading"
+  [error]="error"
+  (submit)="onConfirm()"
+  (cancel)="cancel.emit()">
+  
+  <div edit-step>
+    <div class="input-step">
+      <form [formGroup]="reviewForm">
+        <div class="form-section">
+          <h3>Rating *</h3>
+          <mbc-rating 
+            [rating]="reviewForm.get('rating')?.value"
+            mode="editable"
+            (ratingChange)="reviewForm.get('rating')?.setValue($event)">
+          </mbc-rating>
+          @if (reviewForm.get('rating')?.invalid && reviewForm.get('rating')?.touched) {
+            <div class="error-message">Please select a rating</div>
+          }
+        </div>
+
+        <div class="form-section">
+          <h3>Review Notes (Optional)</h3>
+          <mbc-rich-text-area
+            [(model)]="notesValue"
+            (modelChange)="onNotesChange($event)">
+          </mbc-rich-text-area>
+          @if (reviewForm.get('notes')?.invalid && reviewForm.get('notes')?.touched) {
+            <div class="error-message">Review notes cannot exceed {{ constants.MAX_NOTES_LENGTH }} characters</div>
+          }
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div preview-step>
+    <div class="preview-content">
+      <h3>Rating</h3>
+      <mbc-rating [rating]="reviewForm.get('rating')?.value" mode="readonly"></mbc-rating>
+
+      @if (reviewForm.get('notes')?.value) {
+        <h3>Review Notes</h3>
+        <div class="notes-preview" [innerHTML]="reviewForm.get('notes')?.value"></div>
+      }
+    </div>
+  </div>
+</mbc-edit-confirm-dialog>

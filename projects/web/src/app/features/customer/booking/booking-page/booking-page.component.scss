@@ -1,0 +1,144 @@
+.booking-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #1976d2;
+}
+
+.step-content {
+  padding: 1rem 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  .form-field {
+    flex: 1;
+    
+    &.full-width {
+      flex: none;
+      width: 100%;
+    }
+  }
+}
+
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  min-height: 1.25rem;
+  display: block;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.estimate-card {
+  margin-bottom: 2rem;
+}
+
+.cost-breakdown {
+  .cost-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    
+    &.total {
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-top: 2px solid #1976d2;
+      margin-top: 0.5rem;
+      padding-top: 1rem;
+    }
+  }
+}
+
+.payment-section {
+  margin-top: 2rem;
+  
+  h3 {
+    margin-bottom: 1rem;
+    color: #1976d2;
+  }
+}
+
+.confirmation-card {
+  .delivery-details {
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .confirmation-actions {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+mat-stepper {
+  background: transparent;
+}
+
+::ng-deep {
+  .mat-step-header {
+    .mat-step-icon {
+      background-color: #1976d2;
+    }
+    
+    .mat-step-icon-selected {
+      background-color: #1976d2;
+    }
+  }
+  
+  .mat-step-content {
+    padding: 1rem 0;
+  }
+  
+  .full-width {
+    width: 100% !important;
+    
+    .mat-mdc-form-field {
+      width: 100% !important;
+    }
+    
+    textarea {
+      height: 4rem !important;
+      resize: none !important;
+    }
+  }
+}

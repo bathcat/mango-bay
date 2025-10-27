@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mango Bay Cargo</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Content Security Policy (CSP) Configuration -->
+    <!-- 
+      CSP Rules Explained:
+      - default-src 'self': Default policy for all resource types (same origin only)
+      - script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:4200: 
+        * 'self': Allow scripts from same origin
+        * 'unsafe-inline': Allow inline scripts (dangerous but needed for Angular dev)
+        * 'unsafe-eval': Allow eval() (needed for Angular development mode)
+        * http://localhost:4200: Allow scripts from UI server
+      - style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:4200:
+        * 'self': Allow styles from same origin
+        * 'unsafe-inline': Allow inline styles (needed for Angular)
+        * https://fonts.googleapis.com: Allow Google Fonts CSS
+        * http://localhost:4200: Allow styles from UI server
+      - font-src 'self' https://fonts.gstatic.com http://localhost:4200:
+        * 'self': Allow fonts from same origin
+        * https://fonts.gstatic.com: Allow Google Fonts
+        * http://localhost:4200: Allow fonts from UI server
+      - img-src 'self' data: blob: http://localhost:4200 http://localhost:5110:
+        * 'self': Allow images from same origin
+        * data:: Allow data URLs (base64 images)
+        * blob:: Allow blob URLs (file previews)
+        * http://localhost:4200: Allow images from UI server
+        * http://localhost:5110: Allow images from API server
+      - connect-src 'self' http://localhost:5110: Control AJAX/fetch requests (Angular HTTP calls)
+      - base-uri 'self': Prevent base tag injection attacks
+      - form-action 'self': Restrict where forms can submit
+      - object-src 'none': Block plugins like Flash/Java
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:4200;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:4200;
+      font-src 'self' https://fonts.gstatic.com http://localhost:4200;
+      img-src 'self' data: blob: http://localhost:4200 http://localhost:5110;
+      connect-src 'self' http://localhost:5110;
+      base-uri 'self';
+      form-action 'self';
+      object-src 'none';
+    " />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <mbc-root></mbc-root>
+  </body>
+</html>
+

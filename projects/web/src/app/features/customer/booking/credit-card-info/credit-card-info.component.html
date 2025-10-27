@@ -1,0 +1,68 @@
+<div class="credit-card-form">
+  <form [formGroup]="cardForm">
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Card Number</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="cardNumber"
+        (input)="onCardNumberInput($event)"
+        placeholder="1234 5678 9012 3456"
+        maxlength="19"
+      />
+      <mat-icon matPrefix>credit_card</mat-icon>
+      @if (cardForm.get('cardNumber')?.invalid && cardForm.get('cardNumber')?.touched) {
+        <mat-error>{{ getCardNumberError() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Expiration</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="expiration"
+          (input)="onExpirationInput($event)"
+          placeholder="MM/YY"
+          maxlength="5"
+        />
+        <mat-icon matPrefix>calendar_today</mat-icon>
+        @if (cardForm.get('expiration')?.invalid && cardForm.get('expiration')?.touched) {
+          <mat-error>{{ getExpirationError() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>CVC</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="cvc"
+          (input)="onCvcInput($event)"
+          placeholder="123"
+          maxlength="3"
+        />
+        <mat-icon matPrefix>lock</mat-icon>
+        @if (cardForm.get('cvc')?.invalid && cardForm.get('cvc')?.touched) {
+          <mat-error>{{ getCvcError() }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Cardholder Name</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="cardholderName"
+        placeholder="JOHN DOE"
+      />
+      <mat-icon matPrefix>person</mat-icon>
+      @if (cardForm.get('cardholderName')?.invalid && cardForm.get('cardholderName')?.touched) {
+        <mat-error>{{ getCardholderNameError() }}</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</div>
+

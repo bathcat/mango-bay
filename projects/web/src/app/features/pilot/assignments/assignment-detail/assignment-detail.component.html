@@ -1,0 +1,95 @@
+<div class="back-button-container">
+    <button mat-button routerLink="/assignments">
+      <mat-icon>arrow_back</mat-icon>
+      Back to My Assignments
+    </button>
+  </div>
+
+  <mat-card *mbcLoadable="state.details$ as assignment; errorMessage: 'Assignment Not Found'; errorSubtitle: 'The assignment you are looking for could not be found. It may not exist or you may not have permission to view it.'">
+    <mat-card-header>
+      <mat-card-title>Assignment Details</mat-card-title>
+      <mat-card-subtitle>ID: {{ assignment.delivery.id }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="detail-section">
+        <h3>Status</h3>
+        <mbc-delivery-status [status]="assignment.delivery.status"></mbc-delivery-status>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="detail-section">
+        <mbc-route-info
+          [origin]="assignment.origin"
+          [destination]="assignment.destination"
+          [pilot]="assignment.pilot">
+        </mbc-route-info>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="detail-section">
+        <mbc-cargo-details
+          [cargoDescription]="assignment.delivery.cargoDescription"
+          [cargoWeightKg]="assignment.delivery.cargoWeightKg">
+        </mbc-cargo-details>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="detail-section">
+        <mbc-schedule-info
+          [scheduledFor]="assignment.delivery.scheduledFor"
+          [completedOn]="assignment.delivery.completedOn"
+          [createdAt]="assignment.delivery.createdAt"
+          [updatedAt]="assignment.delivery.updatedAt">
+        </mbc-schedule-info>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      @if (assignment.payment) {
+        <div class="detail-section">
+          <mbc-payment-info [payment]="assignment.payment"></mbc-payment-info>
+        </div>
+      }
+
+      @if (assignment.delivery.status !== 'Pending' && assignment.delivery.status !== 'Cancelled') {
+        <mat-divider></mat-divider>
+
+        <div class="detail-section">
+          <h3>Delivery Actions</h3>
+          <div class="action-buttons">
+            <button 
+              mat-raised-button 
+              color="primary" 
+              (click)="openCompleteDeliveryDialog(assignment.delivery.id)"
+            >
+              <mat-icon>upload</mat-icon>
+              {{ (state.isDelivered$ | async) ? 'Update Proof of Delivery' : 'Complete Delivery' }}
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (state.hasProofImage$ | async) {
+        <mat-divider></mat-divider>
+
+        <div class="detail-section">
+          <h3>Proof of Delivery</h3>
+          <div class="proof-of-delivery">
+            <img [src]="assignment.proofImageDataUrl" alt="Proof of delivery" class="proof-image" />
+          </div>
+        </div>
+      }
+
+      @if ((state.isDelivered$ | async) && assignment.review) {
+        <mat-divider></mat-divider>
+
+        <div class="detail-section">
+          <mbc-review-card [review]="assignment.review"></mbc-review-card>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>

@@ -1,0 +1,46 @@
+<mbc-edit-confirm-dialog
+  title="Complete Delivery"
+  subtitle="Upload proof of delivery image"
+  editStepLabel="Select Image"
+  previewStepLabel="Preview & Confirm"
+  submitButtonText="Confirm & Upload"
+  loadingText="Uploading image..."
+  [canProceed]="canProceed"
+  [isLoading]="isLoading"
+  [error]="error"
+  (submit)="onConfirm()"
+  (cancel)="onCancel()">
+  
+  <div edit-step>
+    <div class="upload-step">
+      <div class="upload-area" (click)="triggerFileInput()">
+        <mat-icon class="upload-icon">cloud_upload</mat-icon>
+        <p>Click to select an image file</p>
+        <p class="upload-hint">JPEG, PNG, or WebP (max 1MB)</p>
+      </div>
+      
+      <input
+        #fileInput
+        type="file"
+        accept="image/*"
+        (change)="onFileSelected($event)"
+        style="display: none;"
+      />
+
+      @if (selectedFile) {
+        <div class="selected-file">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ selectedFile.name }}</span>
+        </div>
+      }
+    </div>
+  </div>
+  
+  <div preview-step>
+    @if (previewUrl) {
+      <div class="image-preview">
+        <img [src]="previewUrl" alt="Preview" />
+      </div>
+    }
+  </div>
+</mbc-edit-confirm-dialog>

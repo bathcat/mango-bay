@@ -1,0 +1,102 @@
+<mbc-edit-confirm-dialog
+  [title]="data().mode === 'create' ? 'Create New Site' : 'Edit Site'"
+  [subtitle]="data().mode === 'create' ? 'Add a new site to the system' : 'Update site information'"
+  [editStepLabel]="data().mode === 'create' ? 'Enter Details' : 'Edit Details'"
+  [previewStepLabel]="'Preview & Confirm'"
+  [submitButtonText]="data().mode === 'create' ? 'Create Site' : 'Update Site'"
+  [loadingText]="data().mode === 'create' ? 'Creating site...' : 'Updating site...'"
+  [canProceed]="canProceed"
+  [isLoading]="data().isLoading"
+  [error]="data().error || null"
+  (submit)="onSubmit()"
+  (cancel)="onCancel()">
+  
+  <div edit-step>
+    <form [formGroup]="form" class="site-form compact-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="Enter site name" />
+        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+          <mat-error>{{ getErrorMessage('name') }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Island</mat-label>
+        <input matInput formControlName="island" placeholder="Enter island name" />
+        @if (form.get('island')?.invalid && form.get('island')?.touched) {
+          <mat-error>{{ getErrorMessage('island') }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="address" placeholder="Enter address" />
+        @if (form.get('address')?.invalid && form.get('address')?.touched) {
+          <mat-error>{{ getErrorMessage('address') }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Notes</mat-label>
+        <textarea 
+          matInput 
+          formControlName="notes" 
+          placeholder="Enter notes about this site"
+          rows="2"></textarea>
+        @if (form.get('notes')?.invalid && form.get('notes')?.touched) {
+          <mat-error>{{ getErrorMessage('notes') }}</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="location-status-row">
+        <mbc-location-editor
+          [value]="form.get('location')?.value"
+          (valueChange)="onLocationChange($event)">
+        </mbc-location-editor>
+
+        <mbc-site-status-picker
+          [value]="form.get('status')?.value"
+          (valueChange)="onStatusChange($event)">
+        </mbc-site-status-picker>
+      </div>
+    </form>
+  </div>
+
+  <div preview-step>
+    <div class="preview-container">
+      <h3>Site Details</h3>
+      
+      <div class="preview-field">
+        <label>Name:</label>
+        <span>{{ form.get('name')?.value }}</span>
+      </div>
+
+      <div class="preview-field">
+        <label>Island:</label>
+        <span>{{ form.get('island')?.value }}</span>
+      </div>
+
+      <div class="preview-field">
+        <label>Address:</label>
+        <span>{{ form.get('address')?.value }}</span>
+      </div>
+
+      <div class="preview-field">
+        <label>Location:</label>
+        <span>X: {{ form.get('location')?.value?.x }}, Y: {{ form.get('location')?.value?.y }}</span>
+      </div>
+
+      <div class="preview-field">
+        <label>Status:</label>
+        <span>{{ form.get('status')?.value }}</span>
+      </div>
+
+      <div class="preview-field">
+        <label>Notes:</label>
+        <p class="notes-preview">{{ form.get('notes')?.value }}</p>
+      </div>
+    </div>
+  </div>
+</mbc-edit-confirm-dialog>
+

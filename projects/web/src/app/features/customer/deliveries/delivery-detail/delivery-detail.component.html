@@ -1,0 +1,101 @@
+<div class="back-button-container">
+    <button mat-button routerLink="/my-deliveries">
+      <mat-icon>arrow_back</mat-icon>
+      Back to My Deliveries
+    </button>
+  </div>
+
+  <mat-card *mbcLoadable="state.details$ as delivery; errorMessage: 'Delivery Not Found'; errorSubtitle: 'The delivery you are looking for could not be found. It may not exist or you may not have permission to view it.'">
+    <mat-card-header>
+      <mat-card-title>Delivery Details</mat-card-title>
+      <mat-card-subtitle>ID: {{ delivery.delivery.id }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="detail-section">
+        <h3>Status</h3>
+        <mbc-delivery-status [status]="delivery.delivery.status"></mbc-delivery-status>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="detail-section">
+        <mbc-route-info
+          [origin]="delivery.origin"
+          [destination]="delivery.destination"
+          [pilot]="delivery.pilot">
+        </mbc-route-info>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="detail-section">
+        <mbc-cargo-details
+          [cargoDescription]="delivery.delivery.cargoDescription"
+          [cargoWeightKg]="delivery.delivery.cargoWeightKg">
+        </mbc-cargo-details>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="detail-section">
+        <mbc-schedule-info
+          [scheduledFor]="delivery.delivery.scheduledFor"
+          [completedOn]="delivery.delivery.completedOn"
+          [createdAt]="delivery.delivery.createdAt"
+          [updatedAt]="delivery.delivery.updatedAt">
+        </mbc-schedule-info>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      @if (delivery.payment) {
+        <div class="detail-section">
+          <mbc-payment-info [payment]="delivery.payment"></mbc-payment-info>
+        </div>
+      }
+
+      @if (state.hasProofImage$ | async) {
+        <mat-divider></mat-divider>
+
+        <div class="detail-section">
+          <h3>Proof of Delivery</h3>
+          <div class="proof-of-delivery">
+            <img [src]="delivery.proofImageDataUrl" alt="Proof of delivery" class="proof-image" />
+          </div>
+        </div>
+      }
+
+      @if (state.isDelivered$ | async) {
+        <mat-divider></mat-divider>
+
+        <div class="detail-section">
+          @if (delivery.review) {
+            <mbc-review-card [review]="delivery.review"></mbc-review-card>
+            
+            <div class="review-actions">
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="openEditReviewDialog(delivery.review)">
+                <mat-icon>edit</mat-icon>
+                Edit Review
+              </button>
+            </div>
+          } @else {
+            <h3>Customer Review</h3>
+            <div class="no-review">
+              <p>No review has been written for this delivery yet.</p>
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="openCreateReviewDialog(delivery.delivery.id)">
+                <mat-icon>rate_review</mat-icon>
+                Write a Review
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
