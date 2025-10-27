@@ -76,10 +76,7 @@ export class SearchResultsComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.state.searchTerm$.subscribe(query => {
       if (query) {
-        const searchTermsEl = document.getElementById('searchTerms');
-        if (searchTermsEl) {
-          searchTermsEl.innerHTML = `Search results for: <mark>${query}</mark>`;
-        }
+        (window as any).searchTerms.innerHTML = `Search results for: <mark>${query}</mark>`;
       }
     });
   }
