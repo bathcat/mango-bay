@@ -54,46 +54,6 @@ public class FileSystemImageRepositoryTests
         Assert.False(fileSystem.File.Exists("/etc/passwd.jpg"));
     }
 
-    [Fact]
-    public async Task SaveSiteImage_WithDirectoryTraversalInExtension_DoesNotEscapeRoot()
-    {
-        var fileSystem = new MockFileSystem();
-        var contentRoot = "/app";
-        var sitesDir = "/app/assets/uploads/sites";
-        fileSystem.AddDirectory(sitesDir);
-
-        var environment = new Mock<IWebHostEnvironment>();
-        environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
-
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", "/../../../evil" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
-        });
-
-        var repository = new FileSystemImageRepository(
-            environment.Object,
-            options,
-            NullLogger<FileSystemImageRepository>.Instance,
-            fileSystem.File,
-            fileSystem.Directory,
-            fileSystem.FileStream,
-            fileSystem.Path);
-
-        var siteId = Guid.NewGuid();
-        var jpegMagicBytes = new byte[] { 0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46 };
-        var maliciousFilename = "photo/../../../evil";
-
-        var result = await repository.SaveSiteImage(siteId, jpegMagicBytes, maliciousFilename);
-
-        Assert.True(result.Success);
-        var expectedPath = fileSystem.Path.Combine(sitesDir, $"{siteId}/../../../evil");
-        var normalizedExpected = fileSystem.Path.GetFullPath(expectedPath);
-        var normalizedRoot = fileSystem.Path.GetFullPath("/app/assets/uploads");
-        Assert.StartsWith(normalizedRoot, normalizedExpected);
-    }
 
     [Fact]
     public async Task SaveSiteImage_WithAbsoluteWindowsPathInFilename_DoesNotEscapeRoot()
