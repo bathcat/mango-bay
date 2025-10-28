@@ -29,8 +29,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -70,8 +79,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets\\uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -109,8 +127,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -147,8 +174,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -180,8 +216,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -215,8 +260,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = maxSize,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -253,8 +307,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -291,8 +354,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -310,7 +382,7 @@ public class FileSystemImageRepositoryTests
         var result = await repository.SaveSiteImage(siteId, jpegMagicBytes, "noextension");
 
         Assert.False(result.Success);
-        Assert.Contains("not allowed", result.ErrorMessage);
+        Assert.Contains("not valid", result.ErrorMessage);
     }
 
     [Fact]
@@ -328,8 +400,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -365,8 +446,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -402,8 +492,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -441,8 +540,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -478,8 +586,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -515,8 +632,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -560,8 +686,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -594,8 +729,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -630,8 +774,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -663,8 +816,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -696,8 +858,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -731,8 +902,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(
@@ -766,8 +946,17 @@ public class FileSystemImageRepositoryTests
         {
             UploadDirectory = "assets/uploads",
             MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" },
-            AllowedMimeTypes = new[] { "image/jpeg", "image/png", "image/webp" }
+            AllowedExtensions = [
+                Images.FileExtension.From(".jpg"),
+                Images.FileExtension.From(".jpeg"),
+                Images.FileExtension.From(".png"),
+                Images.FileExtension.From(".webp")
+            ],
+            AllowedMimeTypes = [
+                Images.MimeTypeValue.From("image/jpeg"),
+                Images.MimeTypeValue.From("image/png"),
+                Images.MimeTypeValue.From("image/webp")
+            ]
         });
 
         var repository = new FileSystemImageRepository(

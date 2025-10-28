@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
     <PackageReference Include="Scalar.AspNetCore" Version="1.2.63" />
     <PackageReference Include="System.IO.Abstractions" Version="21.1.7" />
+    <PackageReference Include="Vogen" Version="4.0.16" />
   </ItemGroup>
 
   <ItemGroup>

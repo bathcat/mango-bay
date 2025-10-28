@@ -83,7 +83,16 @@ public class FileSystemImageRepository : IImageRepository
             }
 
             var extension = _path.GetExtension(originalFileName).ToLowerInvariant();
-            if (!_options.AllowedExtensions.Contains(extension))
+
+            if (!FileExtension.TryFrom(extension, out var fileExtension))
+            {
+                _logger.LogWarning(
+                    "Image upload rejected: invalid extension format {Extension}",
+                    extension);
+                return ImageUploadResult.FailureResult($"File extension {extension} is not valid");
+            }
+
+            if (!_options.AllowedExtensions.Contains(fileExtension))
             {
                 _logger.LogWarning(
                     "Image upload rejected: extension {Extension} not allowed",
