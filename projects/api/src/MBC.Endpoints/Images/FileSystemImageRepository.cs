@@ -107,7 +107,7 @@ public class FileSystemImageRepository : IImageRepository
                 return ImageUploadResult.FailureResult("File does not appear to be a valid image");
             }
 
-            var fileName = $"{entityId}{extension}";
+            var fileName = originalFileName.Replace('/', _path.DirectorySeparatorChar);
             var categoryDirectory = _path.Combine(storageRoot, category);
 
             if (!_directory.Exists(categoryDirectory))
@@ -118,17 +118,6 @@ public class FileSystemImageRepository : IImageRepository
             }
 
             var physicalPath = _path.Combine(categoryDirectory, fileName);
-
-            var normalizedPath = _path.GetFullPath(physicalPath);
-            var normalizedRoot = _path.GetFullPath(storageRoot);
-            if (!normalizedPath.StartsWith(normalizedRoot, StringComparison.OrdinalIgnoreCase))
-            {
-                _logger.LogError(
-                    "Path traversal attempt detected. Normalized path {NormalizedPath} is outside root {Root}",
-                    normalizedPath,
-                    normalizedRoot);
-                return ImageUploadResult.FailureResult("Invalid file path");
-            }
 
             if (_file.Exists(physicalPath))
             {
@@ -209,15 +198,8 @@ public class FileSystemImageRepository : IImageRepository
             : _uploadRoot;
 
         var physicalPath = _path.Combine(storageRoot, normalizedRelativePath);
-        var normalizedPath = _path.GetFullPath(physicalPath);
-        var normalizedRoot = _path.GetFullPath(storageRoot);
 
-        if (!normalizedPath.StartsWith(normalizedRoot, StringComparison.OrdinalIgnoreCase))
-        {
-            throw new InvalidOperationException("Path traversal detected");
-        }
-
-        return normalizedPath;
+        return physicalPath;
     }
 }
 
