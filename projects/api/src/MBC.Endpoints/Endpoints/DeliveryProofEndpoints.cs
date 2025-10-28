@@ -53,8 +53,8 @@ public static class DeliveryProofEndpoints
             return TypedResults.BadRequest("No file uploaded");
         }
 
-        using var stream = file.OpenReadStream();
-        var proof = await proofService.UploadProofOfDelivery(deliveryId, stream, file.FileName);
+        var imageData = await file.ToMemory();
+        var proof = await proofService.UploadProofOfDelivery(deliveryId, imageData, file.FileName);
 
         var proofDto = proofMapper.Map(proof);
         return TypedResults.Created($"{ApiRoutes.Proofs}/deliveries/{deliveryId}", proofDto);
@@ -115,5 +115,7 @@ public static class DeliveryProofEndpoints
         var fileStream = File.OpenRead(physicalPath);
         return TypedResults.File(fileStream, contentType, enableRangeProcessing: true);
     }
+
+
 }
 

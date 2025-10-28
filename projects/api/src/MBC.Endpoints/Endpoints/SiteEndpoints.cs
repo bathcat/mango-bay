@@ -149,8 +149,8 @@ public static class SiteEndpoints
             return TypedResults.BadRequest("No file uploaded");
         }
 
-        using var stream = file.OpenReadStream();
-        var result = await siteService.UploadSiteImage(id, stream, file.FileName);
+        var imageData = await file.ToMemory();
+        var result = await siteService.UploadSiteImage(id, imageData, file.FileName);
 
         if (!result.Success)
         {
@@ -164,5 +164,6 @@ public static class SiteEndpoints
 
         return TypedResults.Ok(result.RelativePath);
     }
+
 }
 

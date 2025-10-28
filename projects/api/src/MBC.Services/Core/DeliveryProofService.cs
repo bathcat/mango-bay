@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using MBC.Core.Authorization;
 using MBC.Core.Entities;
@@ -31,7 +30,7 @@ public class DeliveryProofService : IDeliveryProofService
         _logger = logger;
     }
 
-    public async Task<DeliveryProof> UploadProofOfDelivery(Guid deliveryId, Stream imageStream, string fileName)
+    public async Task<DeliveryProof> UploadProofOfDelivery(Guid deliveryId, ReadOnlyMemory<byte> imageData, string fileName)
     {
         _logger.LogInformation("Uploading proof of delivery for delivery {DeliveryId}", deliveryId);
 
@@ -57,7 +56,7 @@ public class DeliveryProofService : IDeliveryProofService
             throw new InvalidOperationException($"Proof of delivery already exists for delivery {deliveryId}.");
         }
 
-        var result = await _imageRepository.SaveProofOfDeliveryImage(deliveryId, imageStream, fileName);
+        var result = await _imageRepository.SaveProofOfDeliveryImage(deliveryId, imageData, fileName);
 
         if (!result.Success || result.RelativePath == null)
         {

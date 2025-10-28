@@ -227,7 +227,7 @@ public class SiteServiceTests
     {
         var siteId = Guid.NewGuid();
         var existingSite = new Site { Id = siteId, Name = "Test Site" };
-        var imageStream = new MemoryStream();
+        var imageData = new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 };
         var fileName = "test.jpg";
         var relativePath = "sites/123/image.jpg";
 
@@ -237,19 +237,19 @@ public class SiteServiceTests
             .ReturnsAsync((Site s) => s);
 
         var mockImageRepo = new Mock<IImageRepository>();
-        mockImageRepo.Setup(x => x.SaveSiteImage(siteId, imageStream, fileName))
-            .ReturnsAsync(ImageUploadResult.SuccessResult(relativePath, 1024));
+        mockImageRepo.Setup(x => x.SaveSiteImage(siteId, imageData, fileName))
+            .ReturnsAsync(ImageUploadResult.SuccessResult(relativePath, imageData.Length));
 
         var service = CreateService(
             siteStore: mockStore.Object,
             imageRepository: mockImageRepo.Object);
 
-        var result = await service.UploadSiteImage(siteId, imageStream, fileName);
+        var result = await service.UploadSiteImage(siteId, imageData, fileName);
 
         Assert.True(result.Success);
         Assert.Equal(relativePath, result.RelativePath);
         Assert.Equal(relativePath, existingSite.ImageUrl);
-        mockImageRepo.Verify(x => x.SaveSiteImage(siteId, imageStream, fileName), Times.Once);
+        mockImageRepo.Verify(x => x.SaveSiteImage(siteId, imageData, fileName), Times.Once);
         mockStore.Verify(x => x.Update(existingSite), Times.Once);
     }
 
@@ -257,7 +257,7 @@ public class SiteServiceTests
     public async Task UploadSiteImage_SiteNotFound_ReturnsFailureResult()
     {
         var siteId = Guid.NewGuid();
-        var imageStream = new MemoryStream();
+        var imageData = new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 };
         var fileName = "test.jpg";
 
         var mockStore = new Mock<ISiteStore>();
@@ -265,7 +265,7 @@ public class SiteServiceTests
 
         var service = CreateService(siteStore: mockStore.Object);
 
-        var result = await service.UploadSiteImage(siteId, imageStream, fileName);
+        var result = await service.UploadSiteImage(siteId, imageData, fileName);
 
         Assert.False(result.Success);
         Assert.Contains(siteId.ToString(), result.ErrorMessage);
@@ -276,21 +276,21 @@ public class SiteServiceTests
     {
         var siteId = Guid.NewGuid();
         var existingSite = new Site { Id = siteId, Name = "Test Site" };
-        var imageStream = new MemoryStream();
+        var imageData = new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 };
         var fileName = "test.jpg";
 
         var mockStore = new Mock<ISiteStore>();
         mockStore.Setup(x => x.GetById(siteId)).ReturnsAsync(existingSite);
 
         var mockImageRepo = new Mock<IImageRepository>();
-        mockImageRepo.Setup(x => x.SaveSiteImage(siteId, imageStream, fileName))
+        mockImageRepo.Setup(x => x.SaveSiteImage(siteId, imageData, fileName))
             .ReturnsAsync(ImageUploadResult.FailureResult("Upload failed"));
 
         var service = CreateService(
             siteStore: mockStore.Object,
             imageRepository: mockImageRepo.Object);
 
-        var result = await service.UploadSiteImage(siteId, imageStream, fileName);
+        var result = await service.UploadSiteImage(siteId, imageData, fileName);
 
         Assert.False(result.Success);
         Assert.Null(existingSite.ImageUrl);

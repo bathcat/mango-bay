@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using MBC.Core.Entities;
 using MBC.Core.Models;
@@ -102,7 +101,7 @@ public class SiteService : ISiteService
         return await _siteStore.GetById(siteId);
     }
 
-    public async Task<ImageUploadResult> UploadSiteImage(Guid siteId, Stream imageStream, string fileName)
+    public async Task<ImageUploadResult> UploadSiteImage(Guid siteId, ReadOnlyMemory<byte> imageData, string fileName)
     {
         _logger.LogInformation("Uploading site image for site {SiteId}", siteId);
 
@@ -113,7 +112,7 @@ public class SiteService : ISiteService
             return ImageUploadResult.FailureResult($"Site with ID {siteId} not found.");
         }
 
-        var result = await _imageRepository.SaveSiteImage(siteId, imageStream, fileName);
+        var result = await _imageRepository.SaveSiteImage(siteId, imageData, fileName);
 
         if (result.Success && result.RelativePath != null)
         {

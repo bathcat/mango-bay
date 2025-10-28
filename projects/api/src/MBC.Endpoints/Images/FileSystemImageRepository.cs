@@ -45,39 +45,39 @@ public class FileSystemImageRepository : IImageRepository
 
     public Task<ImageUploadResult> SaveProofOfDeliveryImage(
         Guid deliveryId,
-        Stream imageStream,
+        ReadOnlyMemory<byte> imageData,
         string originalFileName)
     {
-        return SaveImageCore(deliveryId, imageStream, originalFileName, ImageCategories.Deliveries, _protectedRoot);
+        return SaveImageCore(deliveryId, imageData, originalFileName, ImageCategories.Deliveries, _protectedRoot);
     }
 
     public Task<ImageUploadResult> SaveSiteImage(
         Guid siteId,
-        Stream imageStream,
+        ReadOnlyMemory<byte> imageData,
         string originalFileName)
     {
-        return SaveImageCore(siteId, imageStream, originalFileName, ImageCategories.Sites, _uploadRoot);
+        return SaveImageCore(siteId, imageData, originalFileName, ImageCategories.Sites, _uploadRoot);
     }
 
     private async Task<ImageUploadResult> SaveImageCore(
         Guid entityId,
-        Stream imageStream,
+        ReadOnlyMemory<byte> imageData,
         string originalFileName,
         string category,
         string storageRoot)
     {
         try
         {
-            if (imageStream == null || imageStream.Length == 0)
+            if (imageData.IsEmpty)
             {
-                return ImageUploadResult.FailureResult("Image stream is empty");
+                return ImageUploadResult.FailureResult("Image data is empty");
             }
 
-            if (imageStream.Length > _options.MaxFileSizeBytes)
+            if (imageData.Length > _options.MaxFileSizeBytes)
             {
                 _logger.LogWarning(
                     "Image upload rejected: file size {FileSize} exceeds limit {MaxSize}",
-                    imageStream.Length,
+                    imageData.Length,
                     _options.MaxFileSizeBytes);
                 return ImageUploadResult.FailureResult($"File size exceeds maximum allowed size of {_options.MaxFileSizeBytes} bytes");
             }
@@ -91,7 +91,7 @@ public class FileSystemImageRepository : IImageRepository
                 return ImageUploadResult.FailureResult($"File extension {extension} is not allowed");
             }
 
-            var mimeType = await MimeTypes.GetMimeType(imageStream);
+            var mimeType = MimeTypes.GetMimeType(imageData.Span);
             if (mimeType == MimeType.UnsupportedOrUnknown)
             {
                 _logger.LogWarning("Image upload rejected: invalid or unsupported image format");
@@ -134,10 +134,9 @@ public class FileSystemImageRepository : IImageRepository
                 }
             }
 
-            imageStream.Position = 0;
             using (var fileStream = _fileStreamFactory.New(physicalPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                await imageStream.CopyToAsync(fileStream);
+                await fileStream.WriteAsync(imageData);
             }
 
             var relativePath = $"{category}/{fileName}";
@@ -148,7 +147,7 @@ public class FileSystemImageRepository : IImageRepository
                 entityId,
                 relativePath);
 
-            return ImageUploadResult.SuccessResult(relativePath, imageStream.Length);
+            return ImageUploadResult.SuccessResult(relativePath, imageData.Length);
         }
         catch (Exception ex)
         {

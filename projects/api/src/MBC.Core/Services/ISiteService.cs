@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using MBC.Core.Entities;
 using MBC.Core.Models;
@@ -16,6 +15,6 @@ public interface ISiteService
 
     Task<Site?> GetSiteById(Guid siteId);
 
-    Task<ImageUploadResult> UploadSiteImage(Guid siteId, Stream imageStream, string fileName);
+    Task<ImageUploadResult> UploadSiteImage(Guid siteId, ReadOnlyMemory<byte> imageData, string fileName);
 }
 
