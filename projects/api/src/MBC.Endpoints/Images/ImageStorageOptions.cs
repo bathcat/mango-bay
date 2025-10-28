@@ -12,9 +12,9 @@ public class ImageStorageOptions
         FileExtension.From(".webp")
     ];
     public MimeTypeValue[] AllowedMimeTypes { get; set; } = [
-        MimeTypeValue.From("image/jpeg"),
-        MimeTypeValue.From("image/png"),
-        MimeTypeValue.From("image/webp")
+        MimeTypeValue.ImageJpeg,
+        MimeTypeValue.ImagePng,
+        MimeTypeValue.ImageWebP
     ];
     public string UploadDirectory { get; set; } = "assets/uploads";
 }

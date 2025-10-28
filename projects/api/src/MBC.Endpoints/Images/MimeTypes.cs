@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 namespace MBC.Endpoints.Images;
 
-
 public static class MimeTypes
 {
     private static readonly byte[] JpegHeader = [0xFF, 0xD8, 0xFF];
@@ -12,32 +11,32 @@ public static class MimeTypes
     private static readonly byte[] WebPHeader = [0x52, 0x49, 0x46, 0x46];
     private static readonly byte[] WebPSignature = [0x57, 0x45, 0x42, 0x50];
 
-    public static MimeType GetMimeType(ReadOnlySpan<byte> buffer)
+    public static MimeTypeValue? GetMimeType(ReadOnlySpan<byte> buffer)
     {
         if (buffer.Length < 3)
         {
-            return MimeType.UnsupportedOrUnknown;
+            return null;
         }
 
         if (buffer.Length >= JpegHeader.Length && MatchesSignature(buffer, JpegHeader))
         {
-            return MimeType.Jpg;
+            return MimeTypeValue.ImageJpeg;
         }
 
         if (buffer.Length >= PngHeader.Length && MatchesSignature(buffer, PngHeader))
         {
-            return MimeType.Png;
+            return MimeTypeValue.ImagePng;
         }
 
         if (buffer.Length >= 12 && MatchesSignature(buffer, WebPHeader) && MatchesSignature(buffer[8..], WebPSignature))
         {
-            return MimeType.WebP;
+            return MimeTypeValue.ImageWebP;
         }
 
-        return MimeType.UnsupportedOrUnknown;
+        return null;
     }
 
-    public static async Task<MimeType> GetMimeType(Stream stream)
+    public static async Task<MimeTypeValue?> GetMimeType(Stream stream)
     {
         var buffer = new byte[12];
         var bytesRead = await stream.ReadAsync(buffer);

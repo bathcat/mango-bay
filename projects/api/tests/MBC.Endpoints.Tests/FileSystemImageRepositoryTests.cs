@@ -36,9 +36,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -86,9 +86,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -134,9 +134,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -181,9 +181,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -223,9 +223,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -267,9 +267,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -314,9 +314,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -361,9 +361,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -407,9 +407,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -453,9 +453,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -499,9 +499,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -547,9 +547,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -593,9 +593,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -639,9 +639,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -693,9 +693,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -736,9 +736,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -781,9 +781,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -823,9 +823,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -865,9 +865,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -909,9 +909,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 
@@ -953,9 +953,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.From("image/jpeg"),
-                Images.MimeTypeValue.From("image/png"),
-                Images.MimeTypeValue.From("image/webp")
+                Images.MimeTypeValue.ImageJpeg,
+                Images.MimeTypeValue.ImagePng,
+                Images.MimeTypeValue.ImageWebP
             ]
         });
 

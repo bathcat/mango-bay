@@ -101,7 +101,7 @@ public class FileSystemImageRepository : IImageRepository
             }
 
             var mimeType = MimeTypes.GetMimeType(imageData.Span);
-            if (mimeType == MimeType.UnsupportedOrUnknown)
+            if (mimeType is null)
             {
                 _logger.LogWarning("Image upload rejected: invalid or unsupported image format");
                 return ImageUploadResult.FailureResult("File does not appear to be a valid image");
