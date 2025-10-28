@@ -287,6 +287,14 @@ public class DeliveryService : IDeliveryService
 
     public async Task<bool> IsFullyBooked(Guid pilotId, DateOnly date)
     {
+        _authorizationService.ThrowIfUnauthorized([UserRoles.Customer, UserRoles.Administrator]);
+
+        if(date < DateOnly.FromDateTime(DateTime.UtcNow))
+        {
+            _logger.LogWarning("Attempted to check if pilot {PilotId} is fully booked for a past date {Date}", pilotId, date);
+            return true;
+        }
+
         var deliveries = await _deliveryStore.GetByPilotId(pilotId, 0, int.MaxValue);
         var bookingsOnDate = deliveries.Items.Count(d =>
             d.Details.ScheduledFor == date &&
@@ -303,6 +311,8 @@ public class DeliveryService : IDeliveryService
 
     public async ValueTask<CostEstimate> CalculateCost(JobDetails details)
     {
+        _authorizationService.ThrowIfUnauthorized([UserRoles.Customer, UserRoles.Administrator]);
+
         _logger.LogInformation(
             "Calculating cost for route {OriginId} -> {DestinationId}, weight {Weight}kg, scheduled for {ScheduledFor}",
             details.OriginId,
