@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using MBC.Core.Models;
@@ -15,19 +16,31 @@ public class FileSystemImageRepository : IImageRepository
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger<FileSystemImageRepository> _logger;
     private readonly ImageStorageOptions _options;
+    private readonly IFile _file;
+    private readonly IDirectory _directory;
+    private readonly IFileStreamFactory _fileStreamFactory;
+    private readonly IPath _path;
     private readonly string _uploadRoot;
     private readonly string _protectedRoot;
 
     public FileSystemImageRepository(
         IWebHostEnvironment environment,
         IOptions<ImageStorageOptions> options,
-        ILogger<FileSystemImageRepository> logger)
+        ILogger<FileSystemImageRepository> logger,
+        IFile file,
+        IDirectory directory,
+        IFileStreamFactory fileStreamFactory,
+        IPath path)
     {
         _environment = environment;
         _options = options.Value;
         _logger = logger;
-        _uploadRoot = Path.Combine(_environment.ContentRootPath, _options.UploadDirectory);
-        _protectedRoot = Path.Combine(_environment.ContentRootPath, "assets", "protected");
+        _file = file;
+        _directory = directory;
+        _fileStreamFactory = fileStreamFactory;
+        _path = path;
+        _uploadRoot = _path.Combine(_environment.ContentRootPath, _options.UploadDirectory);
+        _protectedRoot = _path.Combine(_environment.ContentRootPath, ImageStoragePaths.AssetsDirectory, ImageStoragePaths.ProtectedDirectory);
     }
 
     public Task<ImageUploadResult> SaveProofOfDeliveryImage(
@@ -35,7 +48,7 @@ public class FileSystemImageRepository : IImageRepository
         Stream imageStream,
         string originalFileName)
     {
-        return SaveImageCore(deliveryId, imageStream, originalFileName, "deliveries", _protectedRoot);
+        return SaveImageCore(deliveryId, imageStream, originalFileName, ImageCategories.Deliveries, _protectedRoot);
     }
 
     public Task<ImageUploadResult> SaveSiteImage(
@@ -43,7 +56,7 @@ public class FileSystemImageRepository : IImageRepository
         Stream imageStream,
         string originalFileName)
     {
-        return SaveImageCore(siteId, imageStream, originalFileName, "sites", _uploadRoot);
+        return SaveImageCore(siteId, imageStream, originalFileName, ImageCategories.Sites, _uploadRoot);
     }
 
     private async Task<ImageUploadResult> SaveImageCore(
@@ -69,7 +82,7 @@ public class FileSystemImageRepository : IImageRepository
                 return ImageUploadResult.FailureResult($"File size exceeds maximum allowed size of {_options.MaxFileSizeBytes} bytes");
             }
 
-            var extension = Path.GetExtension(originalFileName).ToLowerInvariant();
+            var extension = _path.GetExtension(originalFileName).ToLowerInvariant();
             if (!_options.AllowedExtensions.Contains(extension))
             {
                 _logger.LogWarning(
@@ -86,19 +99,19 @@ public class FileSystemImageRepository : IImageRepository
             }
 
             var fileName = $"{entityId}{extension}";
-            var categoryDirectory = Path.Combine(storageRoot, category);
+            var categoryDirectory = _path.Combine(storageRoot, category);
 
-            if (!Directory.Exists(categoryDirectory))
+            if (!_directory.Exists(categoryDirectory))
             {
                 throw new InvalidOperationException(
                     $"Image storage directory does not exist: {categoryDirectory}. " +
                     "Please create this directory before running the application.");
             }
 
-            var physicalPath = Path.Combine(categoryDirectory, fileName);
+            var physicalPath = _path.Combine(categoryDirectory, fileName);
 
-            var normalizedPath = Path.GetFullPath(physicalPath);
-            var normalizedRoot = Path.GetFullPath(storageRoot);
+            var normalizedPath = _path.GetFullPath(physicalPath);
+            var normalizedRoot = _path.GetFullPath(storageRoot);
             if (!normalizedPath.StartsWith(normalizedRoot, StringComparison.OrdinalIgnoreCase))
             {
                 _logger.LogError(
@@ -108,11 +121,11 @@ public class FileSystemImageRepository : IImageRepository
                 return ImageUploadResult.FailureResult("Invalid file path");
             }
 
-            if (File.Exists(physicalPath))
+            if (_file.Exists(physicalPath))
             {
                 try
                 {
-                    File.Delete(physicalPath);
+                    _file.Delete(physicalPath);
                     _logger.LogInformation("Deleted existing image file: {FilePath}", physicalPath);
                 }
                 catch (Exception ex)
@@ -122,7 +135,7 @@ public class FileSystemImageRepository : IImageRepository
             }
 
             imageStream.Position = 0;
-            using (var fileStream = new FileStream(physicalPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var fileStream = _fileStreamFactory.New(physicalPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await imageStream.CopyToAsync(fileStream);
             }
@@ -150,9 +163,9 @@ public class FileSystemImageRepository : IImageRepository
         {
             var physicalPath = GetPhysicalPath(relativePath);
 
-            if (File.Exists(physicalPath))
+            if (_file.Exists(physicalPath))
             {
-                File.Delete(physicalPath);
+                _file.Delete(physicalPath);
                 _logger.LogInformation("Deleted image: {RelativePath}", relativePath);
                 return Task.FromResult(true);
             }
@@ -171,7 +184,7 @@ public class FileSystemImageRepository : IImageRepository
         try
         {
             var physicalPath = GetPhysicalPath(relativePath);
-            return Task.FromResult(File.Exists(physicalPath));
+            return Task.FromResult(_file.Exists(physicalPath));
         }
         catch
         {
@@ -181,15 +194,15 @@ public class FileSystemImageRepository : IImageRepository
 
     public string GetPhysicalPath(string relativePath)
     {
-        var normalizedRelativePath = relativePath.Replace('/', Path.DirectorySeparatorChar);
+        var normalizedRelativePath = relativePath.Replace('/', _path.DirectorySeparatorChar);
 
-        var storageRoot = relativePath.StartsWith("deliveries/", StringComparison.OrdinalIgnoreCase)
+        var storageRoot = relativePath.StartsWith($"{ImageCategories.Deliveries}/", StringComparison.OrdinalIgnoreCase)
             ? _protectedRoot
             : _uploadRoot;
 
-        var physicalPath = Path.Combine(storageRoot, normalizedRelativePath);
-        var normalizedPath = Path.GetFullPath(physicalPath);
-        var normalizedRoot = Path.GetFullPath(storageRoot);
+        var physicalPath = _path.Combine(storageRoot, normalizedRelativePath);
+        var normalizedPath = _path.GetFullPath(physicalPath);
+        var normalizedRoot = _path.GetFullPath(storageRoot);
 
         if (!normalizedPath.StartsWith(normalizedRoot, StringComparison.OrdinalIgnoreCase))
         {

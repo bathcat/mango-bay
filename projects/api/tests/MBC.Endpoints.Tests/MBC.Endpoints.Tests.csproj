@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="21.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\MBC.Core\MBC.Core.csproj" />
     <ProjectReference Include="..\..\src\MBC.Endpoints\MBC.Endpoints.csproj" />
   </ItemGroup>

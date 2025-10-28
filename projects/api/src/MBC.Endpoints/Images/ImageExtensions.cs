@@ -1,4 +1,5 @@
 using System.IO;
+using System.IO.Abstractions;
 using MBC.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,12 @@ public static class ImageExtensions
     {
         builder.Services.Configure<ImageStorageOptions>(
             builder.Configuration.GetSection(ImageStorageOptions.SectionName));
+
+        var fs = new FileSystem();
+        builder.Services.AddSingleton<IFile>(fs.File);
+        builder.Services.AddSingleton<IDirectory>(fs.Directory);
+        builder.Services.AddSingleton<IFileStreamFactory>(fs.FileStream);
+        builder.Services.AddSingleton<IPath>(fs.Path);
 
         builder.Services.AddScoped<IImageRepository, FileSystemImageRepository>();
 
