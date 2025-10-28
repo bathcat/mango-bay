@@ -14,21 +14,12 @@ namespace MBC.Endpoints.Tests;
 
 public class FileSystemImageRepositoryTests
 {
-    [Fact]
-    public async Task SaveSiteImage_WithDirectoryTraversalInOriginalFilename_UsesGuidFilenameAndDoesNotEscape()
+    private static IOptions<ImageStorageOptions> GetDefaultOptions(int maxFileSizeBytes = 1_048_576, string uploadDirectory = "assets/uploads")
     {
-        var fileSystem = new MockFileSystem();
-        var contentRoot = "/app";
-        var sitesDir = "/app/assets/uploads/sites";
-        fileSystem.AddDirectory(sitesDir);
-
-        var environment = new Mock<IWebHostEnvironment>();
-        environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
-
-        var options = Options.Create(new ImageStorageOptions
+        return Options.Create(new ImageStorageOptions
         {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
+            UploadDirectory = uploadDirectory,
+            MaxFileSizeBytes = maxFileSizeBytes,
             AllowedExtensions = [
                 Images.FileExtension.From(".jpg"),
                 Images.FileExtension.From(".jpeg"),
@@ -41,6 +32,20 @@ public class FileSystemImageRepositoryTests
                 Images.MimeTypeValue.ImageWebP
             ]
         });
+    }
+
+    [Fact]
+    public async Task SaveSiteImage_WithDirectoryTraversalInOriginalFilename_UsesGuidFilenameAndDoesNotEscape()
+    {
+        var fileSystem = new MockFileSystem();
+        var contentRoot = "/app";
+        var sitesDir = "/app/assets/uploads/sites";
+        fileSystem.AddDirectory(sitesDir);
+
+        var environment = new Mock<IWebHostEnvironment>();
+        environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
+
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -75,22 +80,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets\\uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions(uploadDirectory: "assets\\uploads");
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -123,22 +113,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -170,22 +145,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -212,22 +172,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -256,22 +201,7 @@ public class FileSystemImageRepositoryTests
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
         var maxSize = 1000;
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = maxSize,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions(maxFileSizeBytes: maxSize);
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -303,22 +233,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -350,22 +265,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -396,22 +296,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -442,22 +327,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -488,22 +358,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -536,22 +391,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -582,22 +422,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -628,22 +453,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -682,22 +492,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -725,22 +520,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -770,22 +550,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -812,22 +577,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -854,22 +604,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -898,22 +633,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
@@ -942,22 +662,7 @@ public class FileSystemImageRepositoryTests
         var environment = new Mock<IWebHostEnvironment>();
         environment.Setup(e => e.ContentRootPath).Returns(contentRoot);
 
-        var options = Options.Create(new ImageStorageOptions
-        {
-            UploadDirectory = "assets/uploads",
-            MaxFileSizeBytes = 1_048_576,
-            AllowedExtensions = [
-                Images.FileExtension.From(".jpg"),
-                Images.FileExtension.From(".jpeg"),
-                Images.FileExtension.From(".png"),
-                Images.FileExtension.From(".webp")
-            ],
-            AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
-            ]
-        });
+        var options = GetDefaultOptions();
 
         var repository = new FileSystemImageRepository(
             environment.Object,
