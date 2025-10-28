@@ -27,9 +27,9 @@ public class FileSystemImageRepositoryTests
                 Images.FileExtension.From(".webp")
             ],
             AllowedMimeTypes = [
-                Images.MimeTypeValue.ImageJpeg,
-                Images.MimeTypeValue.ImagePng,
-                Images.MimeTypeValue.ImageWebP
+                Images.MimeType.ImageJpeg,
+                Images.MimeType.ImagePng,
+                Images.MimeType.ImageWebP
             ]
         });
     }

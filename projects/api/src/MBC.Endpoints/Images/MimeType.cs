@@ -4,11 +4,11 @@ using Vogen;
 namespace MBC.Endpoints.Images;
 
 [ValueObject<string>(conversions: Conversions.SystemTextJson)]
-public partial struct MimeTypeValue
+public partial struct MimeType
 {
-    public static readonly MimeTypeValue ImageJpeg = From("image/jpeg");
-    public static readonly MimeTypeValue ImagePng = From("image/png");
-    public static readonly MimeTypeValue ImageWebP = From("image/webp");
+    public static readonly MimeType ImageJpeg = From("image/jpeg");
+    public static readonly MimeType ImagePng = From("image/png");
+    public static readonly MimeType ImageWebP = From("image/webp");
 
     private static Validation Validate(string value)
     {

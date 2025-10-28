@@ -11,7 +11,7 @@ public static class MimeTypes
     private static readonly byte[] WebPHeader = [0x52, 0x49, 0x46, 0x46];
     private static readonly byte[] WebPSignature = [0x57, 0x45, 0x42, 0x50];
 
-    public static MimeTypeValue? GetMimeType(ReadOnlySpan<byte> buffer)
+    public static MimeType? GetMimeType(ReadOnlySpan<byte> buffer)
     {
         if (buffer.Length < 3)
         {
@@ -20,23 +20,23 @@ public static class MimeTypes
 
         if (buffer.Length >= JpegHeader.Length && MatchesSignature(buffer, JpegHeader))
         {
-            return MimeTypeValue.ImageJpeg;
+            return MimeType.ImageJpeg;
         }
 
         if (buffer.Length >= PngHeader.Length && MatchesSignature(buffer, PngHeader))
         {
-            return MimeTypeValue.ImagePng;
+            return MimeType.ImagePng;
         }
 
         if (buffer.Length >= 12 && MatchesSignature(buffer, WebPHeader) && MatchesSignature(buffer[8..], WebPSignature))
         {
-            return MimeTypeValue.ImageWebP;
+            return MimeType.ImageWebP;
         }
 
         return null;
     }
 
-    public static async Task<MimeTypeValue?> GetMimeType(Stream stream)
+    public static async Task<MimeType?> GetMimeType(Stream stream)
     {
         var buffer = new byte[12];
         var bytesRead = await stream.ReadAsync(buffer);
