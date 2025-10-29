@@ -1,4 +1,4 @@
-import { Directive, Input, TemplateRef, ViewContainerRef, OnDestroy, ComponentRef, input } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef, OnDestroy, ComponentRef } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Loadable } from './loadable.types';
 import { LoadingComponent } from './loading.component';
@@ -18,8 +18,8 @@ export class LoadableDirective<T> implements OnDestroy {
   private loadingComponentRef?: ComponentRef<LoadingComponent>;
   private errorComponentRef?: ComponentRef<ErrorStateComponent>;
 
-  loadableErrorMessage = input<string>();
-  loadableErrorSubtitle = input<string>();
+  @Input() loadableErrorMessage?: string;
+  @Input() loadableErrorSubtitle?: string;
 
   constructor(
     private viewContainer: ViewContainerRef,
@@ -45,13 +45,11 @@ export class LoadableDirective<T> implements OnDestroy {
 
         case 'error':
           this.errorComponentRef = this.viewContainer.createComponent(ErrorStateComponent);
-          const errorMessage = this.loadableErrorMessage();
-          const errorSubtitle = this.loadableErrorSubtitle();
-          if (errorMessage) {
-            this.errorComponentRef.instance.message = errorMessage;
+          if (this.loadableErrorMessage) {
+            this.errorComponentRef.instance.message = this.loadableErrorMessage;
           }
-          if (errorSubtitle) {
-            this.errorComponentRef.instance.subtitle = errorSubtitle;
+          if (this.loadableErrorSubtitle) {
+            this.errorComponentRef.instance.subtitle = this.loadableErrorSubtitle;
           } else {
             this.errorComponentRef.instance.subtitle = this.extractErrorMessage(state.error);
           }
