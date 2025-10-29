@@ -39,3 +39,13 @@ This backlog tracks tasks, features, and improvements for the Mango Bay Cargo se
   - Better UX with client-controlled authentication flow
   - **Reference:** OpenID Connect with Google Sign-In
   - **Status:** Pending (current server-side OAuth will be removed first)
+
+- [ ] **Implement Trusted Types API**
+
+  - Configure Trusted Types policy for Angular application
+  - Enforce type checking on dangerous DOM sinks (innerHTML, eval, etc.)
+  - Integrate with DOMPurify for sanitization
+  - Demonstrates modern browser-based XSS prevention
+  - Complements CSP and HTTP-only cookies for defense-in-depth
+  - **Reference:** Trusted Types API (W3C specification)
+  - **Status:** Pending
