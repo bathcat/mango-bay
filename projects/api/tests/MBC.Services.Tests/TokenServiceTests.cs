@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using MBC.Core;
 using MBC.Core.Entities;
 using MBC.Core.Models;
-using MBC.Core.Services;
 using MBC.Services.Authentication;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Moq;
 using Xunit;
 
 namespace MBC.Services.Tests;

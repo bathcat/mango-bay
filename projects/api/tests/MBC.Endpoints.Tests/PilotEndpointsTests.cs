@@ -16,22 +16,22 @@ public class PilotEndpointsTests
     private static Pilot CreatePilot()
     => new()
     {
-            Id = Guid.NewGuid(),
-            FullName = "Test Pilot",
-            ShortName = "Test",
-            Bio = "Test bio",
-            UserId = Guid.NewGuid()
-        };
+        Id = Guid.NewGuid(),
+        FullName = "Test Pilot",
+        ShortName = "Test",
+        Bio = "Test bio",
+        UserId = Guid.NewGuid()
+    };
 
 
     private static PilotDto CreatePilotDto()
      => new()
-        {
-            Id = Guid.NewGuid(),
-            FullName = "Test Pilot",
-            ShortName = "Test",
-            Bio = "Test bio"
-        };
+     {
+         Id = Guid.NewGuid(),
+         FullName = "Test Pilot",
+         ShortName = "Test",
+         Bio = "Test bio"
+     };
 
     [Fact]
     public async Task GetPilots_PassesCorrectPaginationParameters()

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using MBC.Core.Entities;
 using MBC.Core.Models;
@@ -7,7 +6,6 @@ using MBC.Core.Services;
 using MBC.Endpoints.Dtos;
 using MBC.Endpoints.Endpoints;
 using MBC.Endpoints.Mapping;
-using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 

@@ -7,7 +7,6 @@ using MBC.Core.Persistence;
 using MBC.Core.Services;
 using MBC.Endpoints.Dtos;
 using MBC.Endpoints.Endpoints;
-using MBC.Endpoints.Endpoints.Infrastructure;
 using MBC.Endpoints.Mapping;
 using Microsoft.AspNetCore.Http;
 using Moq;

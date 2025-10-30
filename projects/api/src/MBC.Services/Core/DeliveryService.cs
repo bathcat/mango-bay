@@ -289,7 +289,7 @@ public class DeliveryService : IDeliveryService
     {
         _authorizationService.ThrowIfUnauthorized([UserRoles.Customer, UserRoles.Administrator]);
 
-        if(date < DateOnly.FromDateTime(DateTime.UtcNow))
+        if (date < DateOnly.FromDateTime(DateTime.UtcNow))
         {
             _logger.LogWarning("Attempted to check if pilot {PilotId} is fully booked for a past date {Date}", pilotId, date);
             return true;

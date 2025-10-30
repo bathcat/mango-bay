@@ -10,7 +10,7 @@ public sealed record ConsumeTokenResult
     public TokenConsumeFailureReason FailureReason { get; private init; }
     public Guid? FamilyId { get; private init; }
 
-    private ConsumeTokenResult(){}
+    private ConsumeTokenResult() { }
 
     public static ConsumeTokenResult Succeeded(RefreshToken token)
         => new() { Success = true, Token = token, FailureReason = TokenConsumeFailureReason.None };
