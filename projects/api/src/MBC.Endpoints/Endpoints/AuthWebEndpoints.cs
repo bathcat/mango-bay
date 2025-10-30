@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MBC.Core.Services;
 using MBC.Endpoints.Dtos;
 using MBC.Endpoints.Endpoints.Infrastructure;
+using MBC.Endpoints.Infrastructure;
 using MBC.Endpoints.Mapping;
 using MBC.Endpoints.RateLimiting;
 using Microsoft.AspNetCore.Builder;
@@ -15,8 +16,6 @@ namespace MBC.Endpoints.Endpoints;
 
 public static class AuthWebEndpoints
 {
-    private const string AccessCookieName = "mbc_access";
-    private const string RefreshCookieName = "mbc_refresh";
 
     public static void MapAuthWebEndpoints(this WebApplication app)
     {
@@ -106,8 +105,8 @@ public static class AuthWebEndpoints
         IMapper<AuthResult, AuthResponse> authResponseMapper,
         IOptions<JwtSettings> jwtSettings)
     {
-        if (!httpContext.Request.Cookies.TryGetValue(RefreshCookieName, out var refreshToken)
-            || string.IsNullOrWhiteSpace(refreshToken))
+        var refreshToken = Cookies.GetRefreshToken(httpContext);
+        if (string.IsNullOrWhiteSpace(refreshToken))
         {
             return TypedResults.Unauthorized();
         }
@@ -134,8 +133,8 @@ public static class AuthWebEndpoints
         HttpContext httpContext,
         IAuthService authService)
     {
-        if (httpContext.Request.Cookies.TryGetValue(RefreshCookieName, out var refreshToken)
-            && !string.IsNullOrWhiteSpace(refreshToken))
+        var refreshToken = Cookies.GetRefreshToken(httpContext);
+        if (!string.IsNullOrWhiteSpace(refreshToken))
         {
             await authService.SignOut(refreshToken);
         }
@@ -164,8 +163,8 @@ public static class AuthWebEndpoints
             Secure = false
         };
 
-        httpContext.Response.Cookies.Append(AccessCookieName, accessToken, accessCookieOptions);
-        httpContext.Response.Cookies.Append(RefreshCookieName, refreshToken, refreshCookieOptions);
+        httpContext.Response.Cookies.Append(Cookies.AccessCookieName, accessToken, accessCookieOptions);
+        httpContext.Response.Cookies.Append(Cookies.RefreshCookieName, refreshToken, refreshCookieOptions);
     }
 
     private static void ClearAuthCookies(HttpContext httpContext)
@@ -188,8 +187,8 @@ public static class AuthWebEndpoints
             Secure = false
         };
 
-        httpContext.Response.Cookies.Append(AccessCookieName, string.Empty, accessExpiredOptions);
-        httpContext.Response.Cookies.Append(RefreshCookieName, string.Empty, refreshExpiredOptions);
+        httpContext.Response.Cookies.Append(Cookies.AccessCookieName, string.Empty, accessExpiredOptions);
+        httpContext.Response.Cookies.Append(Cookies.RefreshCookieName, string.Empty, refreshExpiredOptions);
     }
 }
 

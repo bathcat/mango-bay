@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using MBC.Endpoints.Infrastructure;
 using System.Threading.Tasks;
 
 namespace MBC.Endpoints.Middleware;
 
 public class CookieToJwtMiddleware
 {
-    private const string AccessCookieName = "mbc_access";
     private const string AuthorizationHeader = "Authorization";
     private readonly RequestDelegate _next;
     private readonly ILogger<CookieToJwtMiddleware> _logger;
@@ -21,9 +21,9 @@ public class CookieToJwtMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         if (!context.Request.Headers.ContainsKey(AuthorizationHeader)
-            && context.Request.Cookies.TryGetValue(AccessCookieName, out var accessToken)
-            && !string.IsNullOrWhiteSpace(accessToken))
+            && Cookies.HasAccessToken(context))
         {
+            var accessToken = Cookies.GetAccessToken(context);
             context.Request.Headers.Append(AuthorizationHeader, $"Bearer {accessToken}");
             _logger.LogDebug("Transformed cookie to Bearer token for request: {Path}", context.Request.Path);
         }
