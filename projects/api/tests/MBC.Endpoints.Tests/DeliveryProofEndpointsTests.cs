@@ -80,11 +80,13 @@ public class DeliveryProofEndpointsTests
         var mockService = new Mock<IDeliveryProofService>();
         var mockMapper = new Mock<IMapper<DeliveryProof, DeliveryProofDto>>();
 
+        IFormFile? nullFile = null;
+
         var result = await DeliveryProofEndpoints.UploadProofOfDelivery(
             mockService.Object,
             mockMapper.Object,
             deliveryId,
-            null);
+            nullFile!);
 
         var bad = Assert.IsType<Microsoft.AspNetCore.Http.HttpResults.BadRequest<string>>(result.Result);
         Assert.Equal(400, bad.StatusCode);
