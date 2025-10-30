@@ -72,6 +72,11 @@ The script measures code coverage for:
 
 Test projects and generated code are automatically excluded from coverage calculations.
 
+## Exclusions
+
+-   Migrations (`MBC.Persistence.Migrations.*`)
+-   Seeds (`MBC.Services.Seeds.*`)
+
 ## Troubleshooting
 
 **No coverage files found?**

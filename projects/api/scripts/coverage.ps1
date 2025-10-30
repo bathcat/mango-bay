@@ -81,7 +81,7 @@ try {
         -targetdir:"coverage-report" `
         -reporttypes:"Html" `
         -assemblyfilters:"-*.Tests*" `
-        -classfilters:"-*.Program" `
+        -classfilters:"-*.Program;-MBC.Persistence.Migrations.*;-MBC.Services.Seeds.*" `
         -filefilters:"-*obj*;-*bin*;-*.g.cs;-*_g.cs;-*SourceGeneration*;-*Vogen*;-*TestResults*;-*.Designer.cs;-*.designer.cs;-GlobalUsings.g.cs;-AssemblyInfo.cs;-AssemblyAttributes.cs;-System.Text.Json.SourceGeneration*;-*JsonSourceGenerator*"
 
     if ($LASTEXITCODE -ne 0) {
