@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using MBC.Core;
@@ -112,7 +111,7 @@ public class CurrentUser : ICurrentUser
         get
         {
             EnsureAuthenticated();
-            var email = GetClaim(JwtRegisteredClaimNames.Email);
+            var email = GetClaim(ClaimTypes.Email);
             if (string.IsNullOrEmpty(email))
             {
                 throw new InvalidOperationException("Email claim not found in token. This indicates a token generation defect.");

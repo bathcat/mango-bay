@@ -139,7 +139,7 @@ export class CreditCardInfoComponent implements OnInit, OnDestroy {
     const result = CreditCardInfoSchema.safeParse(creditCardData);
     
     if (!result.success) {
-      return { zodValidation: result.error.errors };
+      return { zodValidation: result.error.issues };
     }
 
     return null;

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,14 +19,13 @@ public class TokenService : ITokenService
     private const int ClockSkewMinutes = 5;
     private const int RefreshTokenBytes = 32;
     private readonly JwtSettings _jwtSettings;
-    private readonly JwtSecurityTokenHandler _tokenHandler;
+    private readonly JsonWebTokenHandler _tokenHandler;
     private readonly ILogger<TokenService> _logger;
 
     public TokenService(IOptions<JwtSettings> jwtSettings, ILogger<TokenService> logger)
     {
         _jwtSettings = jwtSettings.Value;
-        _tokenHandler = new JwtSecurityTokenHandler();
-        _tokenHandler.MapInboundClaims = false;
+        _tokenHandler = new JsonWebTokenHandler();
         _logger = logger;
     }
 
@@ -34,9 +33,9 @@ public class TokenService : ITokenService
     {
         List<Claim> claims =
         [
-            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email ?? string.Empty),
+            new(JwtHeaderParameterNames.Kid, Guid.NewGuid().ToString()),
             new(ClaimTypes.Role, role)
         ];
 
@@ -53,15 +52,16 @@ public class TokenService : ITokenService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(
-            issuer: _jwtSettings.Issuer,
-            audience: _jwtSettings.Audience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
-            signingCredentials: credentials
-        );
+        var descriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes),
+            Issuer = _jwtSettings.Issuer,
+            Audience = _jwtSettings.Audience,
+            SigningCredentials = credentials
+        };
 
-        return _tokenHandler.WriteToken(token);
+        return _tokenHandler.CreateToken(descriptor);
     }
 
     public (string token, string hash) GenerateOpaqueRefreshToken()
@@ -87,31 +87,6 @@ public class TokenService : ITokenService
         return Convert.ToHexString(hashBytes);
     }
 
-    public ClaimsPrincipal? ValidateAccessToken(string token)
-    {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
 
-        var validationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = key,
-            ValidateIssuer = true,
-            ValidIssuer = _jwtSettings.Issuer,
-            ValidateAudience = true,
-            ValidAudience = _jwtSettings.Audience,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(ClockSkewMinutes)
-        };
-
-        try
-        {
-            return _tokenHandler.ValidateToken(token, validationParameters, out _);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogDebug(ex, "Failed to validate access token");
-            return null;
-        }
-    }
 }
 

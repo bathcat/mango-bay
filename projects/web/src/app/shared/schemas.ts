@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const PilotSchema = z.object({
-  id: z.string().uuid(),
+  id: z.guid(),
   fullName: z.string(),
   shortName: z.string(),
   avatarUrl: z.string().nullable().optional(),
@@ -16,7 +16,7 @@ export const LocationSchema = z.object({
 export const SiteStatusSchema = z.enum(['Upcoming', 'Current', 'Inactive']);
 
 export const SiteSchema = z.object({
-  id: z.string().uuid(),
+  id: z.guid(),
   name: z.string(),
   notes: z.string(),
   island: z.string(),
@@ -27,10 +27,10 @@ export const SiteSchema = z.object({
 });
 
 export const CreateOrUpdateSiteRequestSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name cannot exceed 100 characters'),
-  notes: z.string().min(1, 'Notes are required').max(500, 'Notes cannot exceed 500 characters'),
-  island: z.string().min(1, 'Island is required').max(100, 'Island cannot exceed 100 characters'),
-  address: z.string().min(1, 'Address is required').max(200, 'Address cannot exceed 200 characters'),
+  name: z.string().min(1, { error: 'Name is required' }).max(100, { error: 'Name cannot exceed 100 characters' }),
+  notes: z.string().min(1, { error: 'Notes are required' }).max(500, { error: 'Notes cannot exceed 500 characters' }),
+  island: z.string().min(1, { error: 'Island is required' }).max(100, { error: 'Island cannot exceed 100 characters' }),
+  address: z.string().min(1, { error: 'Address is required' }).max(200, { error: 'Address cannot exceed 200 characters' }),
   location: LocationSchema,
   status: SiteStatusSchema,
 });
@@ -44,14 +44,16 @@ export const PageSchema = <T extends z.ZodTypeAny>(itemSchema: T) =>
     hasMore: z.boolean(),
   });
 
+const PageShape = PageSchema(z.any());
+
 export const SignUpRequestSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string(),
   nickname: z.string(),
 });
 
 export const SignInRequestSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string(),
 });
 
@@ -61,13 +63,13 @@ export const RefreshTokenRequestSchema = z.object({
 
 export const UserRoleSchema = z.enum(['Customer', 'Pilot', 'Administrator']);
 
-export const UserSchema = z.object({
-  id: z.string().uuid(),
+export const UserSchema = z.object({//TODO: Use an algebraic type here.
+  id: z.guid(),
   email: z.string(),
   nickname: z.string().nullable(),
   role: UserRoleSchema,
-  customerId: z.string().uuid().nullable(),
-  pilotId: z.string().uuid().nullable(),
+  customerId: z.guid().nullable(),
+  pilotId: z.guid().nullable(),
 });
 
 export const AuthResponseSchema = z.object({
@@ -86,15 +88,15 @@ export const CreditCardInfoSchema = z.object({
 export const DeliveryStatusSchema = z.enum(['Pending', 'Confirmed', 'InTransit', 'Delivered', 'Cancelled']);
 
 export const JobDetailsSchema = z.object({
-  originId: z.string().uuid(),
-  destinationId: z.string().uuid(),
-  cargoDescription: z.string().min(1, 'Cargo description is required'),
-  cargoWeightKg: z.number().min(0.1, 'Weight must be at least 0.1 kg').max(2000, 'Weight cannot exceed 2000 kg'),
-  scheduledFor: z.string().min(1, 'Scheduled date is required'),
+  originId: z.guid(),
+  destinationId: z.guid(),
+  cargoDescription: z.string().min(1, { error: 'Cargo description is required' }),
+  cargoWeightKg: z.number().min(0.1, { error: 'Weight must be at least 0.1 kg' }).max(2000, { error: 'Weight cannot exceed 2000 kg' }),
+  scheduledFor: z.string().min(1, { error: 'Scheduled date is required' }),
 });
 
 export const BookingRequestSchema = z.object({
-  pilotId: z.string().uuid(),
+  pilotId: z.guid(),
   details: JobDetailsSchema,
   creditCard: CreditCardInfoSchema,
 });
@@ -111,8 +113,8 @@ export const CostEstimateSchema = z.object({
 export const PaymentStatusSchema = z.enum(['Pending', 'Completed', 'Failed', 'Refunded']);
 
 export const PaymentSchema = z.object({
-  id: z.string().uuid(),
-  deliveryId: z.string().uuid(),
+  id: z.guid(),
+  deliveryId: z.guid(),
   amount: z.number(),
   status: PaymentStatusSchema,
   transactionId: z.string(),
@@ -123,35 +125,35 @@ export const PaymentSchema = z.object({
 export const RatingSchema = z.number().int().min(1).max(5);
 
 export const ReviewSchema = z.object({
-  id: z.string().uuid(),
-  pilotId: z.string().uuid(),
+  id: z.guid(),
+  pilotId: z.guid(),
   rating: RatingSchema,
   notes: z.string(),
   createdAt: z.coerce.date(),
 });
 
 export const CreateReviewRequestSchema = z.object({
-  deliveryId: z.string().uuid(),
+  deliveryId: z.guid(),
   rating: RatingSchema,
-  notes: z.string().max(2000, 'Review notes cannot exceed 2000 characters'),
+  notes: z.string().max(2000, { error: 'Review notes cannot exceed 2000 characters' }),
 });
 
 export const UpdateReviewRequestSchema = z.object({
   rating: RatingSchema,
-  notes: z.string().max(2000, 'Review notes cannot exceed 2000 characters'),
+  notes: z.string().max(2000, { error: 'Review notes cannot exceed 2000 characters' }),
 });
 
 export const CustomerSchema = z.object({
-  id: z.string().uuid(),
+  id: z.guid(),
   nickname: z.string(),
 });
 
 export const DeliverySchema = z.object({
-  id: z.string().uuid(),
-  customerId: z.string().uuid(),
-  pilotId: z.string().uuid(),
-  originId: z.string().uuid(),
-  destinationId: z.string().uuid(),
+  id: z.guid(),
+  customerId: z.guid(),
+  pilotId: z.guid(),
+  originId: z.guid(),
+  destinationId: z.guid(),
   scheduledFor: z.coerce.date(),
   completedOn: z.coerce.date().nullable().optional(),
   status: DeliveryStatusSchema,
@@ -159,14 +161,14 @@ export const DeliverySchema = z.object({
   cargoWeightKg: z.number(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  paymentId: z.string().uuid(),
+  paymentId: z.guid(),
 });
 
 export const DeliveryProofSchema = z.object({
-  id: z.string().uuid(),
-  deliveryId: z.string().uuid(),
-  pilotId: z.string().uuid(),
-  customerId: z.string().uuid(),
+  id: z.guid(),
+  deliveryId: z.guid(),
+  pilotId: z.guid(),
+  customerId: z.guid(),
   imagePath: z.string(),
   createdAt: z.coerce.date(),
 });
@@ -176,7 +178,8 @@ export type Location = z.infer<typeof LocationSchema>;
 export type SiteStatus = z.infer<typeof SiteStatusSchema>;
 export type Site = z.infer<typeof SiteSchema>;
 export type CreateOrUpdateSiteRequest = z.infer<typeof CreateOrUpdateSiteRequestSchema>;
-export type Page<T> = z.infer<ReturnType<typeof PageSchema>>;
+type PageCommon = z.infer<typeof PageShape>;
+export type Page<T> = Omit<PageCommon, 'items'> & { items: T[] };
 export type SignUpRequest = z.infer<typeof SignUpRequestSchema>;
 export type SignInRequest = z.infer<typeof SignInRequestSchema>;
 export type RefreshTokenRequest = z.infer<typeof RefreshTokenRequestSchema>;

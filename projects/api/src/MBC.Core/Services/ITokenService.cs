@@ -1,5 +1,4 @@
 using System;
-using System.Security.Claims;
 using MBC.Core.Entities;
 
 namespace MBC.Core.Services;
@@ -12,6 +11,5 @@ public interface ITokenService
 
     string HashToken(string token);
 
-    ClaimsPrincipal? ValidateAccessToken(string token);
 }
 

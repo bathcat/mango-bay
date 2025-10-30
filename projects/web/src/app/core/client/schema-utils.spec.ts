@@ -26,7 +26,7 @@ describe('isSchemaNullable', () => {
 
     it('should detect complex nullable schemas', () => {
       const ReviewSchema = z.object({
-        id: z.string().uuid(),
+        id: z.guid(),
         rating: z.number().int().min(1).max(5),
         notes: z.string(),
       });

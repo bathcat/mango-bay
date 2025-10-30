@@ -1,5 +1,5 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
 using System.Text;
 using MBC.Core;
@@ -35,8 +35,8 @@ public class TokenServiceTests
 
         var jwt = service.GenerateAccessToken(user, role, customerId, pilotId);
 
-        var handler = new JwtSecurityTokenHandler();
-        var token = handler.ReadJwtToken(jwt);
+        var handler = new JsonWebTokenHandler();
+        var token = handler.ReadJsonWebToken(jwt);
         Assert.Contains(token.Claims, c => c.Type == ClaimTypes.Role && c.Value == role);
         Assert.Contains(token.Claims, c => c.Type == MBCClaims.CustomerId && c.Value == customerId.ToString());
         Assert.Contains(token.Claims, c => c.Type == MBCClaims.PilotId && c.Value == pilotId.ToString());
@@ -52,8 +52,8 @@ public class TokenServiceTests
 
         var jwt = service.GenerateAccessToken(user, "User", null, null);
 
-        var handler = new JwtSecurityTokenHandler();
-        var token = handler.ReadJwtToken(jwt);
+        var handler = new JsonWebTokenHandler();
+        var token = handler.ReadJsonWebToken(jwt);
         Assert.Contains(token.Claims, c => c.Type == ClaimTypes.Role && c.Value == "User");
         Assert.DoesNotContain(token.Claims, c => c.Type == MBCClaims.CustomerId);
         Assert.DoesNotContain(token.Claims, c => c.Type == MBCClaims.PilotId);
@@ -90,103 +90,4 @@ public class TokenServiceTests
         Assert.Equal(64, hash1.Length);
     }
 
-    [Fact]
-    public void ValidateAccessToken_WithValidToken_Succeeds()
-    {
-        var user = new MBCUser { Id = Guid.NewGuid(), Email = "alice@example.com" };
-        var service = new TokenService(CreateJwtSettings(), NullLogger<TokenService>.Instance);
-        var jwt = service.GenerateAccessToken(user, "User", null, null);
-
-        var principal = service.ValidateAccessToken(jwt);
-
-        Assert.NotNull(principal);
-        Assert.Contains(principal.Claims, c => c.Type == ClaimTypes.Role && c.Value == "User");
-        Assert.Contains(principal.Claims, c => c.Type == JwtRegisteredClaimNames.Sub && c.Value == user.Id.ToString());
-    }
-
-    [Fact]
-    public void ValidateAccessToken_WithTamperedToken_Fails()
-    {
-        var user = new MBCUser { Id = Guid.NewGuid(), Email = "abc@xyz.com" };
-        var service = new TokenService(CreateJwtSettings(), NullLogger<TokenService>.Instance);
-        var jwt = service.GenerateAccessToken(user, "User", null, null);
-
-        var parts = jwt.Split('.');
-        var tamperedPayload = Convert.ToBase64String(Encoding.UTF8.GetBytes("{\"sub\":\"hacker\"}"));
-        var tamperedToken = $"{parts[0]}.{tamperedPayload}.{parts[2]}";
-
-        var principal = service.ValidateAccessToken(tamperedToken);
-
-        Assert.Null(principal);
-    }
-
-    [Fact]
-    public void ValidateAccessToken_WithInvalidFormat_Fails()
-    {
-        var service = new TokenService(CreateJwtSettings(), NullLogger<TokenService>.Instance);
-
-        var principal = service.ValidateAccessToken("not.a.jwt");
-
-        Assert.Null(principal);
-    }
-
-    [Fact]
-    public void ValidateAccessToken_WithWrongIssuer_Fails()
-    {
-        var user = new MBCUser { Id = Guid.NewGuid(), Email = "issuer@fail.com" };
-        var settings = Options.Create(new JwtSettings
-        {
-            Secret = new string('a', 64),
-            Issuer = "real-issuer",
-            Audience = "audience",
-            AccessTokenExpirationMinutes = 5,
-            RefreshTokenExpirationDays = 14
-        });
-        var service = new TokenService(settings, NullLogger<TokenService>.Instance);
-        var jwt = service.GenerateAccessToken(user, "User", null, null);
-
-        var wrongSettings = Options.Create(new JwtSettings
-        {
-            Secret = new string('a', 64),
-            Issuer = "other-issuer",
-            Audience = "audience",
-            AccessTokenExpirationMinutes = 5,
-            RefreshTokenExpirationDays = 14
-        });
-        var serviceWrong = new TokenService(wrongSettings, NullLogger<TokenService>.Instance);
-
-        var principal = serviceWrong.ValidateAccessToken(jwt);
-
-        Assert.Null(principal);
-    }
-
-    [Fact]
-    public void ValidateAccessToken_WithWrongAudience_Fails()
-    {
-        var user = new MBCUser { Id = Guid.NewGuid(), Email = "aud@fail.com" };
-        var settings = Options.Create(new JwtSettings
-        {
-            Secret = new string('a', 64),
-            Issuer = "issuer",
-            Audience = "expected",
-            AccessTokenExpirationMinutes = 5,
-            RefreshTokenExpirationDays = 14
-        });
-        var service = new TokenService(settings, NullLogger<TokenService>.Instance);
-        var jwt = service.GenerateAccessToken(user, "User", null, null);
-
-        var wrongSettings = Options.Create(new JwtSettings
-        {
-            Secret = new string('a', 64),
-            Issuer = "issuer",
-            Audience = "wrong",
-            AccessTokenExpirationMinutes = 5,
-            RefreshTokenExpirationDays = 14
-        });
-        var serviceWrong = new TokenService(wrongSettings, NullLogger<TokenService>.Instance);
-
-        var principal = serviceWrong.ValidateAccessToken(jwt);
-
-        Assert.Null(principal);
-    }
 }
