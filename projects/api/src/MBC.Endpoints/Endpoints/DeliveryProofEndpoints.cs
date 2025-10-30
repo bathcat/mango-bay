@@ -111,7 +111,6 @@ public static class DeliveryProofEndpoints
             _ => "application/octet-stream"
         };
 
-        //TODO: Revisit this.
         var fileStream = File.OpenRead(physicalPath);
         return TypedResults.File(fileStream, contentType, enableRangeProcessing: true);
     }

@@ -63,7 +63,7 @@ export const RefreshTokenRequestSchema = z.object({
 
 export const UserRoleSchema = z.enum(['Customer', 'Pilot', 'Administrator']);
 
-export const UserSchema = z.object({//TODO: Use an algebraic type here.
+export const UserSchema = z.object({
   id: z.guid(),
   email: z.string(),
   nickname: z.string().nullable(),
