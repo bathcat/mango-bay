@@ -25,6 +25,7 @@ public static class PaymentEndpoints
             .RequireAuthorization()
             .WithTags("Payments");
 
+        //TODO: Authorize these.
         paymentsGroup.MapGet("/{id}", GetPayment)
             .WithName("GetPayment")
             .Produces<PaymentDto>(StatusCodes.Status200OK)
