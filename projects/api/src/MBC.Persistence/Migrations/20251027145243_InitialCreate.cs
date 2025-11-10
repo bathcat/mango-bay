@@ -476,6 +476,7 @@ namespace MBC.Persistence.Migrations
 
             migrationBuilder.RunFileOnSqlServer("CreateProductionAccount.sql");
             migrationBuilder.RunFileOnSqlServer("SearchDeliveriesByCargoDescription.sql");
+            migrationBuilder.RunFileOnSqlServer("SearchPaymentsByCardholderNames.sql");
         }
 
         /// <inheritdoc />

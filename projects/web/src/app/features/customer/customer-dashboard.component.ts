@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SearchCargoInputComponent } from './deliveries/search-cargo/search-cargo-input.component';
+import { SearchPaymentsInputComponent } from './payments/search-payments-input.component';
 import { NavigationService } from '@app/core/routing/navigation.service';
 import { ClientRoutes } from '@app/core/routing/client-routes.const';
 
@@ -16,6 +17,7 @@ import { ClientRoutes } from '@app/core/routing/client-routes.const';
     MatButtonModule,
     MatIconModule,
     SearchCargoInputComponent,
+    SearchPaymentsInputComponent,
   ],
   template: `
     <div class="dashboard-container">
@@ -49,6 +51,19 @@ import { ClientRoutes } from '@app/core/routing/client-routes.const';
           <mat-card-content>
             <p>Find deliveries by searching cargo descriptions</p>
             <mbc-search-cargo-input (search)="onSearchCargo($event)" />
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="dashboard-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>payment</mat-icon>
+              Search Payments
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>Find payments by searching cardholder names</p>
+            <mbc-search-payments-input (search)="onSearchPayments($event)" />
           </mat-card-content>
         </mat-card>
 
@@ -130,6 +145,10 @@ export class CustomerDashboardComponent {
 
   onSearchCargo(searchTerm: string): void {
     this.navigationService.navigateToSearchCargo(searchTerm);
+  }
+  //TODO: Just call the state service directly.
+  onSearchPayments(names: string[]): void {
+    this.navigationService.navigateToSearchPayments(names);
   }
 }
 

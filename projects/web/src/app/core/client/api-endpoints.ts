@@ -44,6 +44,7 @@ export const API_ENDPOINTS = {
   payments: {
     get: (id: string) => `/payments/${id}`,
     byDelivery: (deliveryId: string) => `/payments/by-delivery/${deliveryId}`,
+    searchByCardholders: () => '/payments/search-by-cardholders',
   },
   proofs: {
     upload: (deliveryId: string) => `/proofs/deliveries/${deliveryId}/upload`,

@@ -118,6 +118,7 @@ export const PaymentSchema = z.object({
   amount: z.number(),
   status: PaymentStatusSchema,
   transactionId: z.string(),
+  creditCard: CreditCardInfoSchema,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });

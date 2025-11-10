@@ -13,6 +13,14 @@ using Microsoft.Extensions.Options;
 
 namespace MBC.Services.Core;
 
+/// <summary>
+/// Service for delivery stuff. Pretty hairly.
+/// </summary>
+/// <summary>
+/// Demonstrates authorization via IMbcAuthorizationService: more abstraction and moving parts, but
+/// separates concerns, promotes reusability, and reduces error potential. Compare with CustomerService
+/// which uses imperative authorization inline.
+/// </summary>
 public class DeliveryService : IDeliveryService
 {
     private const int MaxDailyBookingsPerPilot = 5;

@@ -23,6 +23,9 @@
     <None Include="Migrations\SearchDeliveriesByCargoDescription.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Migrations\SearchPaymentsByCardholderNames.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

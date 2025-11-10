@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using MBC.Core;
 using MBC.Core.Entities;
 using MBC.Core.Persistence;
 using MBC.Endpoints.Dtos;
@@ -8,6 +11,7 @@ using MBC.Endpoints.Mapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MBC.Endpoints.Endpoints;
 
@@ -32,6 +36,11 @@ public static class PaymentEndpoints
             .Produces<PaymentDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Retrieves a payment by its associated delivery ID.");
+
+        paymentsGroup.MapGet("/search-by-cardholders", SearchByCardholderNames)
+            .WithName("SearchPaymentsByCardholderNames")
+            .Produces<IEnumerable<PaymentDto>>(StatusCodes.Status200OK)
+            .WithDescription("Searches payments by cardholder names for the current customer.");
     }
 
     public static async Task<Results<Ok<PaymentDto>, NotFound>> GetPayment(
@@ -60,5 +69,25 @@ public static class PaymentEndpoints
         }
 
         return TypedResults.Ok(paymentMapper.Map(payment));
+    }
+
+    public static async Task<Ok<IEnumerable<PaymentDto>>> SearchByCardholderNames(
+        IPaymentStore paymentStore,
+        IMapper<Payment, PaymentDto> paymentMapper,
+        ICurrentUser currentUser,
+        [FromQuery(Name = "names")] string? namesParam)
+    {
+        if (currentUser.CustomerId == null)
+        {
+            throw new UnauthorizedAccessException("Only customers can search their payments.");
+        }
+
+        var names = string.IsNullOrWhiteSpace(namesParam)
+            ? []
+            : namesParam.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        var payments = await paymentStore.SearchByCardholderNames(currentUser.CustomerId.Value, names);
+        var paymentDtos = payments.Select(paymentMapper.Map);
+        return TypedResults.Ok(paymentDtos);
     }
 }

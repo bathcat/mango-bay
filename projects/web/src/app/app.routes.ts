@@ -82,6 +82,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: toRoutePath(ClientRoutes.payments.search()),
+    canActivate: [roleGuard(['Customer'])],
+    loadComponent: () =>
+      import('./features/customer/payments/search-payments.component').then(
+        m => m.SearchPaymentsComponent
+      ),
+  },
+  {
     path: 'deliveries/:id',
     canActivate: [roleGuard(['Customer'])],
     loadComponent: () =>

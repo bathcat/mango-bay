@@ -68,6 +68,12 @@ export class NavigationService {
     });
   }
 
+  navigateToSearchPayments(names: string[]): Promise<boolean> {
+    return this.router.navigate([ClientRoutes.payments.search()], { 
+      queryParams: { names: names.join(',') } 
+    });
+  }
+
   navigateToAssignmentList(): Promise<boolean> {
     return this.router.navigate([ClientRoutes.assignments.list()]);
   }

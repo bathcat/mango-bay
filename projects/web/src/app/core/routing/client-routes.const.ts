@@ -29,6 +29,10 @@ export const ClientRoutes = {
     detail: (id: string) => `/deliveries/${id}`,
     searchCargo: () => '/search-cargo',
   },
+
+  payments: {
+    search: () => '/search-payments',
+  },
   
   assignments: {
     list: () => '/assignments',

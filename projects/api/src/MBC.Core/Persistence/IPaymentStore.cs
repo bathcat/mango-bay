@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MBC.Core.Entities;
 
@@ -29,5 +30,13 @@ public interface IPaymentStore : IStore<Guid, Payment>
     /// <param name="deliveryId">The delivery's unique identifier.</param>
     /// <returns>The payment if found, otherwise null.</returns>
     public Task<Payment?> GetByDeliveryId(Guid deliveryId);
+
+    /// <summary>
+    /// Searches payments by cardholder names for a specific customer.
+    /// </summary>
+    /// <param name="customerId">The customer's unique identifier.</param>
+    /// <param name="names">Array of cardholder names to search for.</param>
+    /// <returns>Collection of matching payments.</returns>
+    public Task<IEnumerable<Payment>> SearchByCardholderNames(Guid customerId, string[] names);
 }
 

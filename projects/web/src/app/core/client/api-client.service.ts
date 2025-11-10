@@ -267,6 +267,14 @@ export class ApiClient {
       responseSchema: PaymentSchema.nullable(),
     });
 
+  searchPaymentsByCardholderNames = (names: string[]): Observable<Payment[]> =>
+    this.request({
+      method: 'GET',
+      endpoint: API_ENDPOINTS.payments.searchByCardholders(),
+      responseSchema: z.array(PaymentSchema),
+      params: names.length > 0 ? { names: names.join(',') } : {},
+    });
+
   uploadProofOfDelivery = (deliveryId: string, file: File): Observable<DeliveryProof> => {
     const formData = new FormData();
     formData.append('file', file);

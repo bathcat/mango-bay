@@ -14,6 +14,13 @@ public class PaymentMapper : IMapper<Payment, PaymentDto>
             Amount = source.Amount,
             Status = source.Status,
             TransactionId = source.TransactionId,
+            CreditCard = new CreditCardInfoDto
+            {
+                CardNumber = source.CreditCard.CardNumber,
+                Expiration = source.CreditCard.Expiration,
+                Cvc = source.CreditCard.Cvc,
+                CardholderName = source.CreditCard.CardholderName
+            },
             CreatedAt = source.CreatedAt,
             UpdatedAt = source.UpdatedAt
         };
