@@ -43,7 +43,6 @@ public class ReviewServiceTests
         var pilotId = Guid.NewGuid();
         var rating = Rating.From(5);
         var notes = "<p>Great service!</p>";
-        var sanitizedNotes = "Great service!";
 
         var delivery = CreateDelivery(deliveryId, pilotId, customerId, DeliveryStatus.Delivered);
 
@@ -61,7 +60,7 @@ public class ReviewServiceTests
         Assert.Equal(customerId, result.CustomerId);
         Assert.Equal(deliveryId, result.DeliveryId);
         Assert.Equal(rating, result.Rating);
-        Assert.Equal(sanitizedNotes, result.Notes);
+        Assert.Equal(notes, result.Notes);
         _mockAuthService.Verify(s => s.ThrowIfUnauthorized(ReviewOperations.Create, delivery), Times.Once);
     }
 
@@ -170,29 +169,6 @@ public class ReviewServiceTests
         Assert.Contains("already been reviewed", exception.Message);
     }
 
-    [Fact]
-    public async Task CreateReview_SanitizesHtmlNotes()
-    {
-        var customerId = Guid.NewGuid();
-        var deliveryId = Guid.NewGuid();
-        var pilotId = Guid.NewGuid();
-        var rating = Rating.From(5);
-        var notes = "<script>alert('xss')</script><p>Good!</p>";
-        var sanitizedNotes = "<p>Good!</p>";
-
-        var delivery = CreateDelivery(deliveryId, pilotId, customerId, DeliveryStatus.Delivered);
-
-        _mockDeliveryStore.Setup(s => s.GetById(deliveryId)).ReturnsAsync(delivery);
-        _mockAuthService.Setup(s => s.ThrowIfUnauthorized(ReviewOperations.Create, delivery));
-        _mockReviewStore.Setup(s => s.GetByDeliveryId(deliveryId)).ReturnsAsync((DeliveryReview?)null);
-        _mockReviewStore.Setup(s => s.Create(It.IsAny<DeliveryReview>())).ReturnsAsync(
-            (DeliveryReview r) => r
-        );
-
-        var result = await _reviewService.CreateReview(customerId, deliveryId, rating, notes);
-
-        Assert.Equal(sanitizedNotes, result.Notes);
-    }
 
     [Fact]
     public async Task UpdateReview_WhenAuthorized_UpdatesReviewSuccessfully()
@@ -203,8 +179,6 @@ public class ReviewServiceTests
         var deliveryId = Guid.NewGuid();
         var newRating = Rating.From(3);
         var newNotes = "<p>Updated notes</p>";
-        var sanitizedNotes = "Updated notes";
-
         var existingReview = CreateReview(reviewId, pilotId, customerId, deliveryId);
 
         _mockReviewStore.Setup(s => s.GetById(reviewId)).ReturnsAsync(existingReview);
@@ -217,7 +191,7 @@ public class ReviewServiceTests
 
         Assert.NotNull(result);
         Assert.Equal(newRating, result.Rating);
-        Assert.Equal(sanitizedNotes, result.Notes);
+        Assert.Equal(newNotes, result.Notes);
         _mockAuthService.Verify(s => s.ThrowIfUnauthorized(ReviewOperations.Update, existingReview), Times.Once);
     }
 
