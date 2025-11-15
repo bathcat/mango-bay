@@ -27,6 +27,7 @@ services:
     environment:
       SA_PASSWORD: P@ssw0rd
       ACCEPT_EULA: Y
-
-    # Add "forwardPorts": ["db:1433"] to **devcontainer.json** to forward MSSQL locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
+    ports:
+      - "1433:1433"
+      - "5110:5110"
+      - "4200:4200"

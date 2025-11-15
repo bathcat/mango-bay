@@ -4,17 +4,32 @@ $apiPath = Join-Path $PSScriptRoot "..\projects\api\src\MBC.Endpoints"
 $webPath = Join-Path $PSScriptRoot "..\projects\web"
 
 function Stop-DevelopmentProcesses {
+    param(
+        [System.Diagnostics.Process]$ApiProcess,
+        [System.Diagnostics.Process]$WebProcess
+    )
+    
     Write-Host ""
     Write-Host "Cleaning up processes..." -ForegroundColor Yellow
     
-    Get-Process -Name "dotnet" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-    Get-Process -Name "node" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    if ($ApiProcess -and -not $ApiProcess.HasExited) {
+        $ApiProcess | Stop-Process -ErrorAction SilentlyContinue
+        Write-Host "API process stopped." -ForegroundColor Gray
+    }
+    
+    if ($WebProcess -and -not $WebProcess.HasExited) {
+        $WebProcess | Stop-Process -ErrorAction SilentlyContinue
+        Write-Host "Web process stopped." -ForegroundColor Gray
+    }
     
     Write-Host "Processes stopped." -ForegroundColor Green
 }
 
+$apiProcess = $null
+$webProcess = $null
+
 $cleanup = Register-EngineEvent -SourceIdentifier PowerShell.Exiting -Action {
-    Stop-DevelopmentProcesses
+    Stop-DevelopmentProcesses -ApiProcess $apiProcess -WebProcess $webProcess
 }
 
 try {
@@ -63,5 +78,5 @@ try {
 }
 finally {
     Unregister-Event -SourceIdentifier PowerShell.Exiting -ErrorAction SilentlyContinue
-    Stop-DevelopmentProcesses
+    Stop-DevelopmentProcesses -ApiProcess $apiProcess -WebProcess $webProcess
 }
