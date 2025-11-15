@@ -18,8 +18,8 @@ export class LoadableDirective<T> implements OnDestroy {
   private loadingComponentRef?: ComponentRef<LoadingComponent>;
   private errorComponentRef?: ComponentRef<ErrorStateComponent>;
 
-  @Input() loadableErrorMessage?: string;
-  @Input() loadableErrorSubtitle?: string;
+  @Input() mbcLoadableErrorMessage?: string;
+  @Input() mbcLoadableErrorSubtitle?: string;
 
   constructor(
     private viewContainer: ViewContainerRef,
@@ -45,11 +45,11 @@ export class LoadableDirective<T> implements OnDestroy {
 
         case 'error':
           this.errorComponentRef = this.viewContainer.createComponent(ErrorStateComponent);
-          if (this.loadableErrorMessage) {
-            this.errorComponentRef.instance.message = this.loadableErrorMessage;
+          if (this.mbcLoadableErrorMessage) {
+            this.errorComponentRef.instance.message = this.mbcLoadableErrorMessage;
           }
-          if (this.loadableErrorSubtitle) {
-            this.errorComponentRef.instance.subtitle = this.loadableErrorSubtitle;
+          if (this.mbcLoadableErrorSubtitle) {
+            this.errorComponentRef.instance.subtitle = this.mbcLoadableErrorSubtitle;
           } else {
             this.errorComponentRef.instance.subtitle = this.extractErrorMessage(state.error);
           }

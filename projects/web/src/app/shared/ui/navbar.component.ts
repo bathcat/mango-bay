@@ -81,7 +81,7 @@ import { SearchInputComponent } from '@app/features/home/search/search-input.com
         </div>
         <nav class="auth-links">
           @if (authService.isAuthenticated$ | async) {
-            <span class="user-info">{{ (authService.currentUser$ | async)?.nickname || (authService.currentUser$ | async)?.email }}</span>
+            <span class="user-info">{{ (authService.currentUser$ | async)?.email }}</span>
             <button mat-raised-button color="warn" (click)="authService.signOut()">
               Sign Out
             </button>
