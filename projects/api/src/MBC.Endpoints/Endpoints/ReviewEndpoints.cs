@@ -23,6 +23,7 @@ public static class ReviewEndpoints
         var reviewsGroup = app.MapGroup(ApiRoutes.Reviews)
             .WithTags("Reviews");
 
+        //TODO: Make non-anonymous.
         reviewsGroup.MapPost("/", CreateReview)
             .WithName("CreateReview")
             .Produces<DeliveryReviewDto>(StatusCodes.Status201Created)
