@@ -23,9 +23,10 @@ public static class ReviewEndpoints
         var reviewsGroup = app.MapGroup(ApiRoutes.Reviews)
             .WithTags("Reviews");
 
-        //TODO: Make non-anonymous.
+
         reviewsGroup.MapPost("/", CreateReview)
             .WithName("CreateReview")
+            .RequireAuthorization()
             .Produces<DeliveryReviewDto>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
             .WithDescription("Creates a new pilot review.");
@@ -38,6 +39,7 @@ public static class ReviewEndpoints
 
         reviewsGroup.MapGet("/delivery/{deliveryId}", GetReviewByDelivery)
             .WithName("GetReviewByDelivery")
+            .RequireAuthorization()
             .Produces<DeliveryReviewDto?>(StatusCodes.Status200OK)
             .WithDescription("Retrieves a review for a specific delivery. Returns null if no review exists yet.");
 
@@ -48,12 +50,14 @@ public static class ReviewEndpoints
 
         reviewsGroup.MapPut("/{reviewId}", UpdateReview)
             .WithName("UpdateReview")
+            .RequireAuthorization()
             .Produces<DeliveryReviewDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Updates an existing review.");
 
         reviewsGroup.MapDelete("/{reviewId}", DeleteReview)
             .WithName("DeleteReview")
+            .RequireAuthorization()
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Deletes a review.");
