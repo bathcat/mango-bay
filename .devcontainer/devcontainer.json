@@ -48,7 +48,7 @@
 	"forwardPorts": [5110, 4200, 1433],
 
 	// postCreateCommand.sh parameters: $1=SA password, $2=dacpac path, $3=sql script(s) path
-	"postCreateCommand": "bash .devcontainer/mssql/postCreateCommand.sh 'P@ssw0rd' './bin/Debug/' './.devcontainer/mssql/'",
+	"postCreateCommand": "bash .devcontainer/mssql/postCreateCommand.sh 'P@ssw0rd' './bin/Debug/' './.devcontainer/mssql/' && npm install --prefix ./projects/web",
 	"features": {
 		"ghcr.io/devcontainers/features/dotnet:2": {
 			"version": "latest"
