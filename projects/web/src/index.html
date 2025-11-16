@@ -10,8 +10,9 @@
     <!-- 
       CSP Rules Explained:
       - default-src 'self': Default policy for all resource types (same origin only)
-      - script-src 'self' 'unsafe-eval' http://localhost:4200: 
+      - script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:4200: 
         * 'self': Allow scripts from same origin
+        * 'unsafe-inline': Allow inline scripts (needed for Trusted Types policy)
         * 'unsafe-eval': Allow eval() (needed for Angular development mode)
         * http://localhost:4200: Allow scripts from UI server
       - style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:4200:
@@ -33,10 +34,16 @@
       - base-uri 'self': Prevent base tag injection attacks
       - form-action 'self': Restrict where forms can submit
       - object-src 'none': Block plugins like Flash/Java
+      - require-trusted-types-for 'script': Enforce Trusted Types for DOM XSS sinks
+      - trusted-types default angular angular#bundler * 'allow-duplicates':
+        * default: Our fallback policy (defined in inline script above)
+        * angular, angular#bundler: Angular's internal policies
+        * *: Allow dynamically created policies
+        * 'allow-duplicates': Allow policies to be recreated
     -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self' 'unsafe-eval' http://localhost:4200;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:4200;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:4200;
       font-src 'self' https://fonts.gstatic.com http://localhost:4200;
       img-src 'self' data: blob: http://localhost:4200 http://localhost:5110;
@@ -44,7 +51,35 @@
       base-uri 'self';
       form-action 'self';
       object-src 'none';
+      require-trusted-types-for 'script';
+      trusted-types default angular angular#bundler * 'allow-duplicates';
     " />
+    
+    <script>
+      if (window.trustedTypes && trustedTypes.createPolicy) {
+        trustedTypes.createPolicy('default', {
+          createHTML: (input) => {
+            const sanitized = String(input)
+              .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+              .replace(/javascript:/gi, '');
+            return sanitized;
+          },
+          createScript: (input) => {
+            return String(input);
+          },
+          createScriptURL: (input) => {
+            const url = String(input);
+            if (url.startsWith('http://localhost:') || 
+                url.startsWith('https://') || 
+                url.startsWith('/') ||
+                url.startsWith('./')) {
+              return url;
+            }
+            throw new TypeError('Invalid script URL');
+          }
+        });
+      }
+    </script>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
