@@ -7,11 +7,25 @@ $isContainer = $env:REMOTE_CONTAINERS -eq "true" -or (Test-Path "/.dockerenv")
 function Stop-DevelopmentProcesses {
     param(
         [System.Diagnostics.Process]$ApiProcess,
-        [System.Diagnostics.Process]$WebProcess
+        [System.Diagnostics.Process]$WebProcess,
+        [System.Management.Automation.Job]$ApiTailerJob,
+        [System.Management.Automation.Job]$WebTailerJob
     )
     
     Write-Host ""
     Write-Host "Cleaning up processes..." -ForegroundColor Yellow
+    
+    if ($ApiTailerJob) {
+        Stop-Job -Job $ApiTailerJob -ErrorAction SilentlyContinue
+        Remove-Job -Job $ApiTailerJob -ErrorAction SilentlyContinue
+        Write-Host "API tailer stopped." -ForegroundColor Gray
+    }
+    
+    if ($WebTailerJob) {
+        Stop-Job -Job $WebTailerJob -ErrorAction SilentlyContinue
+        Remove-Job -Job $WebTailerJob -ErrorAction SilentlyContinue
+        Write-Host "Web tailer stopped." -ForegroundColor Gray
+    }
     
     if ($ApiProcess -and -not $ApiProcess.HasExited) {
         $ApiProcess | Stop-Process -Force -ErrorAction SilentlyContinue
@@ -30,6 +44,8 @@ function Stop-DevelopmentProcesses {
 
 $apiProcess = $null
 $webProcess = $null
+$apiTailerJob = $null
+$webTailerJob = $null
 
 if (-not $isContainer) {
     $cleanup = Register-EngineEvent -SourceIdentifier PowerShell.Exiting -Action {
@@ -82,6 +98,29 @@ try {
     Write-Host "Web:  http://localhost:4200" -ForegroundColor Yellow
     Write-Host ""
 
+    if ($isContainer) {
+        $apiLogPath = "$PSScriptRoot/../api-output.log"
+        $webLogPath = "$PSScriptRoot/../web-output.log"
+        
+        $apiTailerJob = Start-Job -ScriptBlock {
+            param($LogPath)
+            while (-not (Test-Path $LogPath)) { Start-Sleep -Milliseconds 100 }
+            Get-Content $LogPath -Wait | ForEach-Object {
+                Write-Host "[API] $_" -ForegroundColor Cyan
+            }
+        } -ArgumentList $apiLogPath
+        
+        $webTailerJob = Start-Job -ScriptBlock {
+            param($LogPath)
+            while (-not (Test-Path $LogPath)) { Start-Sleep -Milliseconds 100 }
+            Get-Content $LogPath -Wait | ForEach-Object {
+                Write-Host "[WEB] $_" -ForegroundColor Magenta
+            }
+        } -ArgumentList $webLogPath
+        
+        Start-Sleep -Milliseconds 500
+    }
+
     if (-not $isContainer) {
         Write-Host "Waiting for API to start..." -ForegroundColor Gray
         Start-Sleep -Seconds 6
@@ -102,11 +141,14 @@ try {
         Write-Host ""
         
         while ($true) {
+            Receive-Job -Job $apiTailerJob -ErrorAction SilentlyContinue
+            Receive-Job -Job $webTailerJob -ErrorAction SilentlyContinue
+            
             if ($apiProcess.HasExited -or $webProcess.HasExited) {
                 Write-Host "One or more processes have exited unexpectedly." -ForegroundColor Red
                 break
             }
-            Start-Sleep -Seconds 1
+            Start-Sleep -Milliseconds 100
         }
     }
 }
@@ -114,5 +156,5 @@ finally {
     if (-not $isContainer) {
         Unregister-Event -SourceIdentifier PowerShell.Exiting -ErrorAction SilentlyContinue
     }
-    Stop-DevelopmentProcesses -ApiProcess $apiProcess -WebProcess $webProcess
+    Stop-DevelopmentProcesses -ApiProcess $apiProcess -WebProcess $webProcess -ApiTailerJob $apiTailerJob -WebTailerJob $webTailerJob
 }
