@@ -16,7 +16,7 @@ using Xunit;
 
 namespace MBC.Services.Tests;
 
-//TODO: Unboilerplate
+
 public class DeliveryServiceTests
 {
     [Fact]

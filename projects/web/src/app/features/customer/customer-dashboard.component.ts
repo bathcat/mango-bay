@@ -146,7 +146,7 @@ export class CustomerDashboardComponent {
   onSearchCargo(searchTerm: string): void {
     this.navigationService.navigateToSearchCargo(searchTerm);
   }
-  //TODO: Just call the state service directly.
+
   onSearchPayments(names: string[]): void {
     this.navigationService.navigateToSearchPayments(names);
   }

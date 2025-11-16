@@ -28,7 +28,6 @@ export class SearchPaymentsStateService {
   );
 
   performSearch(names: string[]): void {
-    //TODO: We should use the navigationservice here.
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { names: names.join(',') },

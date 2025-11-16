@@ -77,7 +77,6 @@ import { ListCardComponent } from '@app/shared/ui/list-card.component';
 export class SearchPaymentsComponent {
   public readonly state = inject(SearchPaymentsStateService);
 
-  //TODO: Just call the state service directly.
   onSearch(names: string[]): void {
     this.state.performSearch(names);
   }
