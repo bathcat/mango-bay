@@ -22,7 +22,7 @@ export class ReviewStateService {
     this.client.createReview(deliveryId, rating, notes).pipe(
       map(review => Loadable.loaded(review)),
       catchError(error => of(Loadable.error(error))),
-    ).subscribe(this.createStateSubject);
+    ).subscribe(state => this.createStateSubject.next(state));
   }
 
   public updateReview(reviewId: string, rating: Rating, notes: string): void {
@@ -31,7 +31,7 @@ export class ReviewStateService {
     this.client.updateReview(reviewId, rating, notes).pipe(
       map(review => Loadable.loaded(review)),
       catchError(error => of(Loadable.error(error))),
-    ).subscribe(this.updateStateSubject);
+    ).subscribe(state => this.updateStateSubject.next(state));
   }
 
   public resetCreate(): void {
