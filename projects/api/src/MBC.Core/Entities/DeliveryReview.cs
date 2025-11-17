@@ -44,20 +44,6 @@ public sealed class DeliveryReview : IPilotAssigned, ICustomerOwned
     /// </summary>
     public DateTime CreatedAt { get; set; }
 
-    /// <summary>
-    /// Navigation property: The pilot being reviewed.
-    /// </summary>
-    public Pilot? Pilot { get; set; }
-
-    /// <summary>
-    /// Navigation property: The customer who wrote the review.
-    /// </summary>
-    public Customer? Customer { get; set; }
-
-    /// <summary>
-    /// Navigation property: The delivery being reviewed.
-    /// </summary>
-    public Delivery? Delivery { get; set; }
 }
 
 
