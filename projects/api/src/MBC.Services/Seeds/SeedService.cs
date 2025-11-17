@@ -7,6 +7,7 @@ using MBC.Core.Entities;
 using MBC.Core.Models;
 using MBC.Core.Persistence;
 using MBC.Core.Services;
+using MBC.Core.ValueObjects;
 using MBC.Services.Authentication;
 using MBC.Services.Core;
 using MBC.Services.Seeds.Data;
@@ -101,6 +102,20 @@ public class SeedService : IHostedService
             var pilotStore = scope.ServiceProvider.GetRequiredService<IPilotStore>();
             var siteStore = scope.ServiceProvider.GetRequiredService<ISiteStore>();
             await SeedDeliveries(mockDeliveryService, pilotStore, siteStore, customerId);
+        }
+
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var mockAuthorizationService = new MockMbcAuthorizationService();
+            var mockReviewService = new ReviewService(
+                scope.ServiceProvider.GetRequiredService<IDeliveryReviewStore>(),
+                scope.ServiceProvider.GetRequiredService<IDeliveryStore>(),
+                mockAuthorizationService,
+                scope.ServiceProvider.GetRequiredService<ILogger<ReviewService>>(),
+                scope.ServiceProvider.GetRequiredService<IHtmlSanitizer>());
+
+            var deliveryStore = scope.ServiceProvider.GetRequiredService<IDeliveryStore>();
+            await SeedReviews(mockReviewService, deliveryStore, customerId);
         }
 
         _logger.LogInformation("Database seeding completed");
@@ -221,6 +236,15 @@ public class SeedService : IHostedService
         ("Mysterious cargo - handle with care", 33.3m)
     ];
 
+    private static readonly (int Rating, string Notes)[] SampleReviews =
+    [
+        (5, "<p>Excellent pilot! Very professional and on-time delivery.</p>"),
+        (5, "<p>Outstanding service, would definitely book again!</p>"),
+        (4, "<p>Good flight, just a bit bumpy near the destination.</p>"),
+        (5, "<p>Cargo arrived in perfect condition. Highly recommend!</p>"),
+        (4, "<p>Smooth delivery, though arrived 30 minutes late.</p>")
+    ];
+
     private async Task SeedDeliveries(IDeliveryService deliveryService, IPilotStore pilotStore, ISiteStore siteStore, Guid customerId)
     {
         _logger.LogInformation("Seeding deliveries");
@@ -269,6 +293,42 @@ public class SeedService : IHostedService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to create delivery {Index}", i + 1);
+                throw;
+            }
+        }
+    }
+
+    private async Task SeedReviews(IReviewService reviewService, IDeliveryStore deliveryStore, Guid customerId)
+    {
+        _logger.LogInformation("Seeding reviews");
+
+        var deliveriesPage = await deliveryStore.GetByCustomerId(customerId, 0, int.MaxValue);
+        var deliveries = deliveriesPage.Items.ToList();
+
+        var deliveriesToReview = deliveries.Take(5).ToList();
+
+        for (int i = 0; i < deliveriesToReview.Count; i++)
+        {
+            var delivery = deliveriesToReview[i];
+            var sample = SampleReviews[i];
+
+            delivery.Status = DeliveryStatus.Delivered;
+            delivery.CompletedOn = DateTime.UtcNow.AddDays(-Random.Shared.Next(5, 20));
+            await deliveryStore.Update(delivery);
+
+            try
+            {
+                await reviewService.CreateReview(
+                    customerId,
+                    delivery.Id,
+                    Rating.From(sample.Rating),
+                    sample.Notes);
+
+                _logger.LogDebug("Created review {Index} for delivery {DeliveryId}", i + 1, delivery.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create review {Index}", i + 1);
                 throw;
             }
         }
