@@ -276,6 +276,58 @@ npm start
 
 ---
 
+## Working with Vulnerability Branches
+
+Each vulnerability exercise lives on its own git branch. The main branch contains the secure baseline application.
+
+### Available Branches
+
+- `vulnerability/xss-persistent` - Stored XSS in review notes
+- `vulnerability/xss-dom` - DOM-based XSS in search results
+- `vulnerability/idor` - Insecure direct object references
+- `vulnerability/path-traversal` - File upload path traversal
+- `vulnerability/sql-injection` - SQL injection in delivery search
+- `feature/http-only-cookies` - Secure authentication implementation
+
+### Viewing Available Branches
+
+To see all branches (including remote branches):
+
+```bash
+git branch -r
+```
+
+### Switching to a Vulnerability Branch
+
+To work on a specific vulnerability:
+
+```bash
+git checkout vulnerability/xss-persistent
+```
+
+Git will automatically create a local tracking branch if it doesn't exist yet.
+
+### Setting Up on Another Machine
+
+If you've already cloned the repository on one machine and want to access all branches on another machine:
+
+1. Fetch all remote branches:
+
+   ```bash
+   git fetch --all
+   ```
+
+2. Checkout the branch you want:
+
+   ```bash
+   git checkout vulnerability/idor
+   ```
+
+**Common mistake:** Don't include `origin/` when checking out. Use `git checkout vulnerability/xss-dom`, not `git checkout origin/vulnerability/xss-dom` (the latter creates a detached HEAD state).
+
+
+---
+
 ## Troubleshooting
 
 ### Port Already in Use
