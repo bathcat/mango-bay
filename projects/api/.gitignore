@@ -490,5 +490,6 @@ $RECYCLE.BIN/
 *.swp
 
 # Uploaded images - ignore all files in protected directory except .gitkeep
-**/protected/**
+**/protected/*
+!**/protected/**/
 !**/protected/**/.gitkeep
