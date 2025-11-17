@@ -18,7 +18,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IMapper<Pilot, PilotDto>, PilotMapper>();
         services.AddSingleton<IMapper<Site, SiteDto>, SiteMapper>();
         services.AddSingleton<IMapper<Payment, PaymentDto>, PaymentMapper>();
-        services.AddSingleton<IMapper<DeliveryReview, DeliveryReviewDto>, DeliveryReviewMapper>();
         services.AddSingleton<IMapper<DeliveryProof, DeliveryProofDto>, DeliveryProofMapper>();
         services.AddSingleton<IMapper<Delivery, DeliveryDto>, DeliveryMapper>();
 

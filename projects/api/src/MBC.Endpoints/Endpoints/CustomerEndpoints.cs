@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using MBC.Core;
 using MBC.Core.Entities;
 using MBC.Core.Services;
 using MBC.Endpoints.Dtos;
@@ -19,8 +18,7 @@ public static class CustomerEndpoints
         ArgumentNullException.ThrowIfNull(app);
 
         var customersGroup = app.MapGroup(ApiRoutes.Customers)
-            .WithTags("Customers")
-            .RequireAuthorization();
+            .WithTags("Customers");
 
         customersGroup.MapGet("/{id}", GetCustomer)
             .WithName("GetCustomer")
@@ -37,21 +35,9 @@ public static class CustomerEndpoints
 
     public static async Task<Results<Ok<CustomerDto>, NotFound>> GetCustomer(
         ICustomerService customerService,
-        ICurrentUser currentUser,
         IMapper<Customer, CustomerDto> customerMapper,
         Guid id)
     {
-        var canViewAnyCustomer = currentUser.User.IsInRole(UserRoles.Administrator) ||
-                                 currentUser.User.IsInRole(UserRoles.Pilot);
-
-        var canViewSelf = currentUser.User.IsInRole(UserRoles.Customer) &&
-                          currentUser.CustomerId == id;
-
-        if (!canViewAnyCustomer && !canViewSelf)
-        {
-            return TypedResults.NotFound();
-        }
-
         var customer = await customerService.GetCustomerById(id);
         if (customer == null)
         {
@@ -63,21 +49,10 @@ public static class CustomerEndpoints
 
     public static async Task<Results<Ok<CustomerDto>, NotFound>> UpdateCustomer(
         ICustomerService customerService,
-        ICurrentUser currentUser,
         IMapper<Customer, CustomerDto> customerMapper,
         Guid id,
         UpdateCustomerRequest request)
     {
-        var canUpdateAnyCustomer = currentUser.User.IsInRole(UserRoles.Administrator);
-
-        var canUpdateSelf = currentUser.User.IsInRole(UserRoles.Customer) &&
-                            currentUser.CustomerId == id;
-
-        if (!canUpdateAnyCustomer && !canUpdateSelf)
-        {
-            return TypedResults.NotFound();
-        }
-
         var customer = await customerService.UpdateCustomer(id, request.Nickname);
         var customerDto = customerMapper.Map(customer);
         return TypedResults.Ok(customerDto);

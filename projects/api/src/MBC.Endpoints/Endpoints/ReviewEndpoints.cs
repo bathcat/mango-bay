@@ -6,7 +6,6 @@ using MBC.Core.Models;
 using MBC.Core.Services;
 using MBC.Endpoints.Dtos;
 using MBC.Endpoints.Endpoints.Infrastructure;
-using MBC.Endpoints.Mapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -27,31 +26,31 @@ public static class ReviewEndpoints
         reviewsGroup.MapPost("/", CreateReview)
             .WithName("CreateReview")
             .RequireAuthorization()
-            .Produces<DeliveryReviewDto>(StatusCodes.Status201Created)
+            .Produces<DeliveryReview>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
             .WithDescription("Creates a new pilot review.");
 
         reviewsGroup.MapGet("/{id}", GetReview)
             .WithName("GetReview")
-            .Produces<DeliveryReviewDto>(StatusCodes.Status200OK)
+            .Produces<DeliveryReview>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Retrieves a specific review by its ID.");
 
         reviewsGroup.MapGet("/delivery/{deliveryId}", GetReviewByDelivery)
             .WithName("GetReviewByDelivery")
             .RequireAuthorization()
-            .Produces<DeliveryReviewDto?>(StatusCodes.Status200OK)
+            .Produces<DeliveryReview?>(StatusCodes.Status200OK)
             .WithDescription("Retrieves a review for a specific delivery. Returns null if no review exists yet.");
 
         reviewsGroup.MapGet("/pilot/{pilotId}", GetReviewsByPilot)
             .WithName("GetReviewsByPilot")
-            .Produces<Page<DeliveryReviewDto>>(StatusCodes.Status200OK)
+            .Produces<Page<DeliveryReview>>(StatusCodes.Status200OK)
             .WithDescription("Retrieves paginated reviews for a specific pilot.");
 
         reviewsGroup.MapPut("/{reviewId}", UpdateReview)
             .WithName("UpdateReview")
             .RequireAuthorization()
-            .Produces<DeliveryReviewDto>(StatusCodes.Status200OK)
+            .Produces<DeliveryReview>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .WithDescription("Updates an existing review.");
 
@@ -63,10 +62,9 @@ public static class ReviewEndpoints
             .WithDescription("Deletes a review.");
     }
 
-    public static async Task<Created<DeliveryReviewDto>> CreateReview(
+    public static async Task<Created<DeliveryReview>> CreateReview(
         IReviewService reviewService,
         ICurrentUser currentUser,
-        IMapper<DeliveryReview, DeliveryReviewDto> reviewMapper,
         CreateReviewRequest request)
     {
         var review = await reviewService.CreateReview(
@@ -75,13 +73,11 @@ public static class ReviewEndpoints
             request.Rating,
             request.Notes);
 
-        var reviewDto = reviewMapper.Map(review);
-        return TypedResults.Created($"{ApiRoutes.Reviews}/{reviewDto.Id}", reviewDto);
+        return TypedResults.Created($"{ApiRoutes.Reviews}/{review.Id}", review);
     }
 
-    public static async Task<Results<Ok<DeliveryReviewDto>, NotFound>> GetReview(
+    public static async Task<Results<Ok<DeliveryReview>, NotFound>> GetReview(
         IReviewService reviewService,
-        IMapper<DeliveryReview, DeliveryReviewDto> reviewMapper,
         Guid id)
     {
         var review = await reviewService.GetReviewById(id);
@@ -90,40 +86,34 @@ public static class ReviewEndpoints
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(reviewMapper.Map(review));
+        return TypedResults.Ok(review);
     }
 
-    public static async Task<Ok<DeliveryReviewDto?>> GetReviewByDelivery(
+    public static async Task<Ok<DeliveryReview?>> GetReviewByDelivery(
         IReviewService reviewService,
-        IMapper<DeliveryReview, DeliveryReviewDto> reviewMapper,
         Guid deliveryId)
     {
         var review = await reviewService.GetReviewByDeliveryId(deliveryId);
-        DeliveryReviewDto? result = reviewMapper.MapOptional(review);
-        return TypedResults.Ok<DeliveryReviewDto?>(result);
+        return TypedResults.Ok<DeliveryReview?>(review);
     }
 
-    public static async Task<Ok<Page<DeliveryReviewDto>>> GetReviewsByPilot(
+    public static async Task<Ok<Page<DeliveryReview>>> GetReviewsByPilot(
         IReviewService reviewService,
-        IMapper<DeliveryReview, DeliveryReviewDto> reviewMapper,
         Guid pilotId,
         [FromQuery(Name = "skip")] int skip = 0,
         [FromQuery(Name = "take")] int take = 5)
     {
         var reviews = await reviewService.GetByPilotId(pilotId, skip, take);
-        var page = PageMapper.Map(reviews, reviewMapper);
-        return TypedResults.Ok(page);
+        return TypedResults.Ok(reviews);
     }
 
-    public static async Task<Ok<DeliveryReviewDto>> UpdateReview(
+    public static async Task<Ok<DeliveryReview>> UpdateReview(
         IReviewService reviewService,
-        IMapper<DeliveryReview, DeliveryReviewDto> reviewMapper,
         Guid reviewId,
         UpdateReviewRequest request)
     {
         var review = await reviewService.UpdateReview(reviewId, request.Rating, request.Notes);
-        var reviewDto = reviewMapper.Map(review);
-        return TypedResults.Ok(reviewDto);
+        return TypedResults.Ok(review);
     }
 
     public static async Task<NoContent> DeleteReview(
