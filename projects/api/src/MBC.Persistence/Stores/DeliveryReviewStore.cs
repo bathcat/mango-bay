@@ -23,18 +23,18 @@ public class DeliveryReviewStore : IDeliveryReviewStore
     public async Task<DeliveryReview?> GetById(Guid id)
     {
         return await _context.DeliveryReviews
-            .Include(pr => pr.Pilot)
-            .Include(pr => pr.Customer)
-            .Include(pr => pr.Delivery)
+            // .Include(pr => pr.Pilot)
+            // .Include(pr => pr.Customer)
+            // .Include(pr => pr.Delivery)
             .FirstOrDefaultAsync(pr => pr.Id == id);
     }
 
     public async Task<Page<DeliveryReview>> GetPage(int skip, int take)
     {
         var query = _context.DeliveryReviews
-            .Include(pr => pr.Pilot)
-            .Include(pr => pr.Customer)
-            .Include(pr => pr.Delivery)
+            // .Include(pr => pr.Pilot)
+            // .Include(pr => pr.Customer)
+            // .Include(pr => pr.Delivery)
             .OrderByDescending(r => r.CreatedAt);
 
         return await query.ToPageAsync(skip, take);
@@ -77,9 +77,9 @@ public class DeliveryReviewStore : IDeliveryReviewStore
     {
         var query = _context.DeliveryReviews
             .Where(pr => pr.PilotId == pilotId)
-            .Include(pr => pr.Pilot)
-            .Include(pr => pr.Customer)
-            .Include(pr => pr.Delivery)
+            // .Include(pr => pr.Pilot)
+            // .Include(pr => pr.Customer)
+            // .Include(pr => pr.Delivery)
             .OrderByDescending(r => r.CreatedAt);
 
         return await query.ToPageAsync(skip, take);
@@ -88,9 +88,9 @@ public class DeliveryReviewStore : IDeliveryReviewStore
     public async Task<DeliveryReview?> GetByDeliveryId(Guid deliveryId)
     {
         return await _context.DeliveryReviews
-            .Include(pr => pr.Pilot)
-            .Include(pr => pr.Customer)
-            .Include(pr => pr.Delivery)
+            // .Include(pr => pr.Pilot)
+            // .Include(pr => pr.Customer)
+            // .Include(pr => pr.Delivery)
             .FirstOrDefaultAsync(pr => pr.DeliveryId == deliveryId);
     }
 }

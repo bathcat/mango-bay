@@ -96,19 +96,6 @@ public class MBCDbContext : IdentityDbContext<MBCUser, IdentityRole<Guid>, Guid>
                 .OnDelete(DeleteBehavior.NoAction);
         });
 
-        modelBuilder.Entity<DeliveryReview>(entity =>
-        {
-            entity.HasOne(r => r.Customer)
-                .WithMany()
-                .HasForeignKey(r => r.CustomerId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            entity.HasOne(r => r.Pilot)
-                .WithMany()
-                .HasForeignKey(r => r.PilotId)
-                .OnDelete(DeleteBehavior.NoAction);
-        });
-
         modelBuilder.Entity<RefreshToken>(entity =>
         {
             entity.HasIndex(rt => rt.FamilyId);
