@@ -1,33 +1,11 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet-mssql
 {
-	"name": "C# (.NET) and MS SQL",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
-	// Configure tool-specific properties.
+	"name": "C# (.NET) and SQLite",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
 	"customizations": {
-		// Configure properties specific to VS Code.
 		"vscode": {
-			// Set *default* container specific settings.json values on container create.
 			"settings": { 
-				"mssql.connections": [
-					{
-						"server": "localhost,1433",
-						"database": "",
-						"authenticationType": "SqlLogin",
-						"user": "sa",
-						"password": "P@ssw0rd",
-						"emptyPasswordInput": false,
-						"savePassword": false,
-						"profileName": "mssql-container"
-					}
-				],
-				// Add PowerShell as a terminal profile and make it the default for Linux terminals in the container.
 				"terminal.integrated.profiles.linux": {
 					"PowerShell": {
 						"path": "pwsh",
@@ -36,19 +14,13 @@
 				},
 				"terminal.integrated.defaultProfile.linux": "PowerShell"
 			},
-			
-			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				"ms-dotnettools.csharp",
-				"ms-mssql.mssql"
+				"ms-dotnettools.csharp"
 			]
 		}
 	},
-
-	"forwardPorts": [5110, 4200, 1433],
-
-	// postCreateCommand.sh parameters: $1=SA password, $2=dacpac path, $3=sql script(s) path
-	"postCreateCommand": "bash .devcontainer/mssql/postCreateCommand.sh 'P@ssw0rd' './bin/Debug/' './.devcontainer/mssql/' && npm install --prefix ./projects/web",
+	"forwardPorts": [5110, 4200],
+	"postCreateCommand": "npm install --prefix ./projects/web",
 	"features": {
 		"ghcr.io/devcontainers/features/dotnet:2": {
 			"version": "latest"
@@ -64,5 +36,5 @@
 			"version": "latest"
 		}
 	},
-    "remoteUser": "root"
+	"remoteUser": "root"
 }
