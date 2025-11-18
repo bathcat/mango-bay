@@ -77,14 +77,29 @@ public static class ServiceCollectionExtensions
             .Get<FrontendSettings>()
             ?? throw new Exception("FrontendSettings not found");
 
+        var isCodespaces = Environment.GetEnvironmentVariable("CODESPACES") == "true" ||
+                          !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITHUB_CODESPACE_TOKEN"));
+
         builder.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(policy =>
             {
-                policy.WithOrigins(frontendSettings.BaseUrl)
-                      .AllowCredentials()
-                      .AllowAnyMethod()
-                      .AllowAnyHeader();
+                if (isCodespaces)
+                {
+                    policy.SetIsOriginAllowed(origin =>
+                          origin.Contains(".github.dev", StringComparison.OrdinalIgnoreCase) ||
+                          origin == frontendSettings.BaseUrl)
+                          .AllowCredentials()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                }
+                else
+                {
+                    policy.WithOrigins(frontendSettings.BaseUrl)
+                          .AllowCredentials()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                }
             });
         });
 
