@@ -29,8 +29,6 @@ public static class BuilderExtensions
         services.AddScoped<IAuthorizationHandler, CreateDeliveryProofAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, StakeholderAuthorizationHandler<DeliveryProof>>();
 
-        services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
-
         services.AddHostedService<SeedService>();
 
         return services;

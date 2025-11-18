@@ -19,7 +19,6 @@ public class ReviewServiceTests
     private readonly Mock<IDeliveryReviewStore> _mockReviewStore;
     private readonly Mock<IDeliveryStore> _mockDeliveryStore;
     private readonly Mock<IMbcAuthorizationService> _mockAuthService;
-    private readonly Mock<IHtmlSanitizer> _mockSanitizer;
     private readonly ReviewService _reviewService;
 
     public ReviewServiceTests()
@@ -27,14 +26,12 @@ public class ReviewServiceTests
         _mockReviewStore = new Mock<IDeliveryReviewStore>();
         _mockDeliveryStore = new Mock<IDeliveryStore>();
         _mockAuthService = new Mock<IMbcAuthorizationService>();
-        _mockSanitizer = new Mock<IHtmlSanitizer>();
 
         _reviewService = new ReviewService(
             _mockReviewStore.Object,
             _mockDeliveryStore.Object,
             _mockAuthService.Object,
-            NullLogger<ReviewService>.Instance,
-            _mockSanitizer.Object
+            NullLogger<ReviewService>.Instance
         );
     }
 
@@ -53,7 +50,6 @@ public class ReviewServiceTests
         _mockDeliveryStore.Setup(s => s.GetById(deliveryId)).ReturnsAsync(delivery);
         _mockAuthService.Setup(s => s.ThrowIfUnauthorized(ReviewOperations.Create, delivery));
         _mockReviewStore.Setup(s => s.GetByDeliveryId(deliveryId)).ReturnsAsync((DeliveryReview?)null);
-        _mockSanitizer.Setup(s => s.Sanitize(notes)).Returns(sanitizedNotes);
         _mockReviewStore.Setup(s => s.Create(It.IsAny<DeliveryReview>())).ReturnsAsync(
             (DeliveryReview r) => r
         );
@@ -67,7 +63,6 @@ public class ReviewServiceTests
         Assert.Equal(rating, result.Rating);
         Assert.Equal(sanitizedNotes, result.Notes);
         _mockAuthService.Verify(s => s.ThrowIfUnauthorized(ReviewOperations.Create, delivery), Times.Once);
-        _mockSanitizer.Verify(s => s.Sanitize(notes), Times.Once);
     }
 
     [Fact]
@@ -190,7 +185,6 @@ public class ReviewServiceTests
         _mockDeliveryStore.Setup(s => s.GetById(deliveryId)).ReturnsAsync(delivery);
         _mockAuthService.Setup(s => s.ThrowIfUnauthorized(ReviewOperations.Create, delivery));
         _mockReviewStore.Setup(s => s.GetByDeliveryId(deliveryId)).ReturnsAsync((DeliveryReview?)null);
-        _mockSanitizer.Setup(s => s.Sanitize(notes)).Returns(sanitizedNotes);
         _mockReviewStore.Setup(s => s.Create(It.IsAny<DeliveryReview>())).ReturnsAsync(
             (DeliveryReview r) => r
         );
@@ -198,7 +192,6 @@ public class ReviewServiceTests
         var result = await _reviewService.CreateReview(customerId, deliveryId, rating, notes);
 
         Assert.Equal(sanitizedNotes, result.Notes);
-        _mockSanitizer.Verify(s => s.Sanitize(notes), Times.Once);
     }
 
     [Fact]
@@ -216,7 +209,6 @@ public class ReviewServiceTests
 
         _mockReviewStore.Setup(s => s.GetById(reviewId)).ReturnsAsync(existingReview);
         _mockAuthService.Setup(s => s.ThrowIfUnauthorized(ReviewOperations.Update, existingReview));
-        _mockSanitizer.Setup(s => s.Sanitize(newNotes)).Returns(sanitizedNotes);
         _mockReviewStore.Setup(s => s.Update(It.IsAny<DeliveryReview>())).ReturnsAsync(
             (DeliveryReview r) => r
         );
@@ -227,7 +219,6 @@ public class ReviewServiceTests
         Assert.Equal(newRating, result.Rating);
         Assert.Equal(sanitizedNotes, result.Notes);
         _mockAuthService.Verify(s => s.ThrowIfUnauthorized(ReviewOperations.Update, existingReview), Times.Once);
-        _mockSanitizer.Verify(s => s.Sanitize(newNotes), Times.Once);
     }
 
     [Fact]
