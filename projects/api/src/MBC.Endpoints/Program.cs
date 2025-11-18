@@ -64,6 +64,9 @@ public class Program
         });
 
         var app = builder.Build();
+
+        app.UseCors();
+
         app.UseRateLimiter();
 
         if (app.Environment.IsDevelopment())
@@ -72,8 +75,6 @@ public class Program
         }
 
         app.UseExceptionHandler();
-
-        app.UseCors();
 
         app.UseAuthentication();
         app.UseAuthorization();
