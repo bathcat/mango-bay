@@ -254,9 +254,9 @@ This starts both API and web app in watch mode.
 
 ### Expected URLs
 
-- **API**: http://localhost:5000
+- **API**: http://localhost:5110
 - **Web App**: http://localhost:4200
-- **API Documentation**: http://localhost:5000/scalar/v1
+- **API Documentation**: http://localhost:5110/scalar/v1
 
 ### Run Components Separately
 
