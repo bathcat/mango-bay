@@ -36,15 +36,18 @@
 	"portsAttributes": {
 		"5110": {
 			"label": "API",
-			"onAutoForward": "notify"
+			"onAutoForward": "notify",
+			"visibility": "public"
 		},
 		"4200": {
 			"label": "Web",
-			"onAutoForward": "openBrowser"
+			"onAutoForward": "openBrowser",
+			"visibility": "public"
 		},
 		"1433": {
 			"label": "SQL Server",
-			"onAutoForward": "silent"
+			"onAutoForward": "silent",
+			"visibility": "private"
 		}
 	},
 	"postCreateCommand": "bash .devcontainer/mssql/postCreateCommand.sh 'P@ssw0rd' './bin/Debug/' './.devcontainer/mssql/' && npm install --prefix ./projects/web",

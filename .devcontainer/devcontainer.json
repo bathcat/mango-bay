@@ -23,11 +23,13 @@
 	"portsAttributes": {
 		"5110": {
 			"label": "API",
-			"onAutoForward": "notify"
+			"onAutoForward": "notify",
+			"visibility": "public"
 		},
 		"4200": {
 			"label": "Web",
-			"onAutoForward": "openBrowser"
+			"onAutoForward": "openBrowser",
+			"visibility": "public"
 		}
 	},
 	"postCreateCommand": "npm install --prefix ./projects/web",
