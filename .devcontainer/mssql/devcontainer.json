@@ -33,6 +33,20 @@
 		}
 	},
 	"forwardPorts": [5110, 4200, 1433],
+	"portsAttributes": {
+		"5110": {
+			"label": "API",
+			"onAutoForward": "notify"
+		},
+		"4200": {
+			"label": "Web",
+			"onAutoForward": "openBrowser"
+		},
+		"1433": {
+			"label": "SQL Server",
+			"onAutoForward": "silent"
+		}
+	},
 	"postCreateCommand": "bash .devcontainer/mssql/postCreateCommand.sh 'P@ssw0rd' './bin/Debug/' './.devcontainer/mssql/' && npm install --prefix ./projects/web",
 	"features": {
 		"ghcr.io/devcontainers/features/dotnet:2": {

@@ -43,11 +43,11 @@
     -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:4200;
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:4200;
-      font-src 'self' https://fonts.gstatic.com http://localhost:4200;
-      img-src 'self' data: blob: http://localhost:4200 http://localhost:5110;
-      connect-src 'self' http://localhost:5110;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:4200 https://*.github.dev;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:4200 https://*.github.dev;
+      font-src 'self' https://fonts.gstatic.com http://localhost:4200 https://*.github.dev;
+      img-src 'self' data: blob: http://localhost:4200 http://localhost:5110 https://*.github.dev;
+      connect-src 'self' http://localhost:5110 https://*.github.dev;
       base-uri 'self';
       form-action 'self';
       object-src 'none';
@@ -72,7 +72,8 @@
             if (url.startsWith('http://localhost:') || 
                 url.startsWith('https://') || 
                 url.startsWith('/') ||
-                url.startsWith('./')) {
+                url.startsWith('./') ||
+                url.includes('.github.dev')) {
               return url;
             }
             throw new TypeError('Invalid script URL');

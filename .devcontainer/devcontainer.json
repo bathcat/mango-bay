@@ -20,6 +20,16 @@
 		}
 	},
 	"forwardPorts": [5110, 4200],
+	"portsAttributes": {
+		"5110": {
+			"label": "API",
+			"onAutoForward": "notify"
+		},
+		"4200": {
+			"label": "Web",
+			"onAutoForward": "openBrowser"
+		}
+	},
 	"postCreateCommand": "npm install --prefix ./projects/web",
 	"features": {
 		"ghcr.io/devcontainers/features/dotnet:2": {
