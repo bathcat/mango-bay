@@ -77,7 +77,6 @@ public class Program
 
         app.UseForwardedHeaders();
 
-        app.UseCors();
 
         app.UseRateLimiter();
 
@@ -87,6 +86,10 @@ public class Program
         }
 
         app.UseExceptionHandler();
+
+        app.UseCors();
+
+        app.UseCookieToJwtMiddleware();
 
         app.UseAuthentication();
         app.UseAuthorization();

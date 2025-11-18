@@ -7,3 +7,9 @@ public sealed record AuthResponse
     public required UserDto User { get; init; }
 }
 
+//TODO Bust this into a new file.
+public sealed record AuthWebResponse
+{
+    public required UserDto User { get; init; }
+}
+

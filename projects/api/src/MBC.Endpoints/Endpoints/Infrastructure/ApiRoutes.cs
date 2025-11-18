@@ -4,7 +4,8 @@ public static class ApiRoutes
 {
     private const string Prefix = "/api/v1";
 
-    public static string Auth => $"{Prefix}/auth";
+    public static string AuthJwt => $"{Prefix}/auth/jwt";//TODO: We don't need the jwt as the web client is cookie only
+    public static string AuthWeb => $"{Prefix}/auth/web";
     public static string Deliveries => $"{Prefix}/deliveries";
     public static string Customers => $"{Prefix}/customers";
     public static string Payments => $"{Prefix}/payments";

@@ -1,9 +1,9 @@
 export const API_ENDPOINTS = {
   auth: {
-    signUp: () => '/auth/signup',
-    signIn: () => '/auth/signin',
-    refresh: () => '/auth/refresh',
-    signOut: () => '/auth/signout',
+    signUp: () => '/auth/web/signup',
+    signIn: () => '/auth/web/signin',
+    refresh: () => '/auth/web/refresh',
+    signOut: () => '/auth/web/signout',
   },
   deliveries: {
     create: () => '/deliveries',
