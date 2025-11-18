@@ -7,6 +7,7 @@ public static class WebApplicationExtensions
     public static WebApplication MapEndpoints(this WebApplication app)
     {
         app.MapAuthEndpoints();
+        app.MapAuthWebEndpoints();
         app.MapDeliveryEndpoints();
         app.MapCustomerEndpoints();
         app.MapPaymentEndpoints();

@@ -2,12 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, finalize, map, Observable, shareReplay } from 'rxjs';
 import {
-  AuthResponse,
+  AuthWebResponse,
   SignInRequest,
   SignUpRequest,
   User,
 } from '@app/shared/schemas';
-import { TokenStoreService } from './token-store.service';
+import { UserStoreService } from './user-store.service';
 import { ApiClient } from '@core/client';
 
 @Injectable({
@@ -15,29 +15,27 @@ import { ApiClient } from '@core/client';
 })
 export class AuthService {
   private readonly apiClient = inject(ApiClient);
-  private readonly tokenStore = inject(TokenStoreService);
+  private readonly userStore = inject(UserStoreService);
   private readonly router = inject(Router);
 
   private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
   public readonly currentUser$ = this.currentUserSubject.asObservable();
   public readonly isAuthenticated$ = new BehaviorSubject<boolean>(false);
-  private refreshInProgress$: Observable<AuthResponse> | null = null;
+  private refreshInProgress$: Observable<AuthWebResponse> | null = null;
 
   constructor() {
     this.initializeAuthState();
   }
 
   private initializeAuthState(): void {
-    if (this.tokenStore.hasTokens()) {
-      const user = this.tokenStore.getUser();
-      if (user) {
-        this.currentUserSubject.next(user);
-      }
+    const user = this.userStore.getUser();
+    if (user) {
+      this.currentUserSubject.next(user);
       this.isAuthenticated$.next(true);
     }
   }
 
-  signUp = (request: SignUpRequest): Observable<AuthResponse> =>
+  signUp = (request: SignUpRequest): Observable<AuthWebResponse> =>
     this.apiClient.signUp(request).pipe(
       map((authResponse) => {
         this.handleAuthResponse(authResponse);
@@ -45,7 +43,7 @@ export class AuthService {
       })
     );
 
-  signIn = (request: SignInRequest): Observable<AuthResponse> =>
+  signIn = (request: SignInRequest): Observable<AuthWebResponse> =>
     this.apiClient.signIn(request).pipe(
       map((authResponse) => {
         this.handleAuthResponse(authResponse);
@@ -54,29 +52,20 @@ export class AuthService {
     );
 
   signOut(): void {
-    const refreshToken = this.tokenStore.getRefreshToken();
-
-    if (refreshToken) {
-      this.apiClient.signOut(refreshToken).subscribe({
-        error: (err) => console.error('Sign out error:', err),
-      });
-    }
+    this.apiClient.signOut().subscribe({
+      error: (err) => console.error('Sign out error:', err),
+    });
 
     this.clearAuthState();
     this.router.navigate(['/']);
   }
 
-  refreshToken = (): Observable<AuthResponse> => {
+  refreshToken = (): Observable<AuthWebResponse> => {
     if (this.refreshInProgress$) {
       return this.refreshInProgress$;
     }
 
-    const refreshToken = this.tokenStore.getRefreshToken();
-    if (!refreshToken) {
-      throw new Error('No refresh token available');
-    }
-
-    this.refreshInProgress$ = this.apiClient.refreshToken({ refreshToken }).pipe(
+    this.refreshInProgress$ = this.apiClient.refreshToken().pipe(
       map((authResponse) => {
         this.handleAuthResponse(authResponse);
         return authResponse;
@@ -90,22 +79,14 @@ export class AuthService {
     return this.refreshInProgress$;
   };
 
-  handleOAuthCallback(accessToken: string, refreshToken: string): void {
-    this.tokenStore.setAccessToken(accessToken);
-    this.tokenStore.setRefreshToken(refreshToken);
-    this.isAuthenticated$.next(true);
-  }
-
-  private handleAuthResponse(authResponse: AuthResponse): void {
-    this.tokenStore.setAccessToken(authResponse.accessToken);
-    this.tokenStore.setRefreshToken(authResponse.refreshToken);
-    this.tokenStore.setUser(authResponse.user);
+  private handleAuthResponse(authResponse: AuthWebResponse): void {
+    this.userStore.setUser(authResponse.user);
     this.currentUserSubject.next(authResponse.user);
     this.isAuthenticated$.next(true);
   }
 
   private clearAuthState(): void {
-    this.tokenStore.clearTokens();
+    this.userStore.clearUser();
     this.currentUserSubject.next(null);
     this.isAuthenticated$.next(false);
   }

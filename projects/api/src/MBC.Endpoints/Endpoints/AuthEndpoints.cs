@@ -12,38 +12,39 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MBC.Endpoints.Endpoints;
 
+//TODO: it seems like we should rename this to 'jwtendpoints' or some such
 public static class AuthEndpoints
 {
     public static void MapAuthEndpoints(this WebApplication app)
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        var authGroup = app.MapGroup(ApiRoutes.Auth)
+        var authGroup = app.MapGroup(ApiRoutes.AuthJwt)
             .RequireRateLimiting(RateLimitPolicies.Auth)
-            .WithTags("Authentication");
+            .WithTags("Authentication - JWT");
 
         authGroup.MapPost("/signup", SignUp)
-            .WithName("SignUp")
+            .WithName("JwtSignUp")
             .Produces<AuthResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
-            .WithDescription("Create a new customer account with email and password.");
+            .WithDescription("Create a new customer account with email and password (returns JWT tokens).");
 
         authGroup.MapPost("/signin", SignIn)
-            .WithName("SignIn")
+            .WithName("JwtSignIn")
             .Produces<AuthResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
-            .WithDescription("Sign in with email and password.");
+            .WithDescription("Sign in with email and password (returns JWT tokens).");
 
         authGroup.MapPost("/refresh", RefreshToken)
-            .WithName("RefreshToken")
+            .WithName("JwtRefreshToken")
             .Produces<AuthResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
-            .WithDescription("Exchange refresh token for new access token.");
+            .WithDescription("Exchange refresh token for new access token (JWT mechanism).");
 
         authGroup.MapPost("/signout", SignOut)
-            .WithName("SignOut")
+            .WithName("JwtSignOut")
             .Produces(StatusCodes.Status204NoContent)
-            .WithDescription("Sign out and invalidate refresh token.");
+            .WithDescription("Sign out and invalidate refresh token (JWT mechanism).");
 
     }
 

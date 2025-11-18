@@ -78,6 +78,10 @@ export const AuthResponseSchema = z.object({
   user: UserSchema,
 });
 
+export const AuthWebResponseSchema = z.object({
+  user: UserSchema,
+});
+
 export const CreditCardInfoSchema = z.object({
   cardNumber: z.string().regex(/^\d{16}$/, 'Card number must be exactly 16 digits'),
   expiration: z.string(),
@@ -187,6 +191,7 @@ export type RefreshTokenRequest = z.infer<typeof RefreshTokenRequestSchema>;
 export type UserRole = z.infer<typeof UserRoleSchema>;
 export type User = z.infer<typeof UserSchema>;
 export type AuthResponse = z.infer<typeof AuthResponseSchema>;
+export type AuthWebResponse = z.infer<typeof AuthWebResponseSchema>;
 export type CreditCardInfo = z.infer<typeof CreditCardInfoSchema>;
 export type DeliveryStatus = z.infer<typeof DeliveryStatusSchema>;
 export type JobDetails = z.infer<typeof JobDetailsSchema>;

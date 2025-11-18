@@ -9,14 +9,12 @@ import { ErrorInfo } from '../errors/error.models';
 import { asDataUrl, handleImageError } from './image-utils';
 import { isSchemaNullable } from './schema-utils';
 import {
-  AuthResponse,
-  AuthResponseSchema,
+  AuthWebResponse,
+  AuthWebResponseSchema,
   SignInRequest,
   SignInRequestSchema,
   SignUpRequest,
   SignUpRequestSchema,
-  RefreshTokenRequest,
-  RefreshTokenRequestSchema,
   Pilot,
   PilotSchema,
   Page,
@@ -55,10 +53,6 @@ interface RequestConfig<TReq, TRes> {
   params?: Record<string, string | number>;
 }
 
-const SignOutRequestSchema = z.object({
-  refreshToken: z.string(),
-});
-
 const NoContentSchema = z.unknown();
 
 @Injectable({
@@ -69,40 +63,36 @@ export class ApiClient {
   private readonly apiConfig = inject(API_CONFIG);
   private readonly errorService = inject(ErrorService);
 
-  signUp = (request: SignUpRequest): Observable<AuthResponse> =>
+  signUp = (request: SignUpRequest): Observable<AuthWebResponse> =>
     this.request({
       method: 'POST',
       endpoint: API_ENDPOINTS.auth.signUp(),
       body: request,
-      responseSchema: AuthResponseSchema,
+      responseSchema: AuthWebResponseSchema,
       requestSchema: SignUpRequestSchema,
     });
 
-  signIn = (request: SignInRequest): Observable<AuthResponse> =>
+  signIn = (request: SignInRequest): Observable<AuthWebResponse> =>
     this.request({
       method: 'POST',
       endpoint: API_ENDPOINTS.auth.signIn(),
       body: request,
-      responseSchema: AuthResponseSchema,
+      responseSchema: AuthWebResponseSchema,
       requestSchema: SignInRequestSchema,
     });
 
-  refreshToken = (request: RefreshTokenRequest): Observable<AuthResponse> =>
+  refreshToken = (): Observable<AuthWebResponse> =>
     this.request({
       method: 'POST',
       endpoint: API_ENDPOINTS.auth.refresh(),
-      body: request,
-      responseSchema: AuthResponseSchema,
-      requestSchema: RefreshTokenRequestSchema,
+      responseSchema: AuthWebResponseSchema,
     });
 
-  signOut = (refreshToken: string): Observable<unknown> =>
+  signOut = (): Observable<unknown> =>
     this.request({
       method: 'POST',
       endpoint: API_ENDPOINTS.auth.signOut(),
-      body: { refreshToken },
       responseSchema: NoContentSchema,
-      requestSchema: SignOutRequestSchema,
     });
 
   getPilots = (skip: number, take: number): Observable<Page<Pilot>> =>
@@ -166,7 +156,7 @@ export class ApiClient {
 
     const url = `${this.apiConfig.baseUrl}${API_ENDPOINTS.sites.uploadImage(siteId)}`;
 
-    return this.http.post<string>(url, formData).pipe(
+    return this.http.post<string>(url, formData, { withCredentials: true }).pipe(
       map(response => {
         const validationResult = z.string().safeParse(response);
         if (!validationResult.success) {
@@ -281,7 +271,7 @@ export class ApiClient {
 
     const url = `${this.apiConfig.baseUrl}${API_ENDPOINTS.proofs.upload(deliveryId)}`;
 
-    return this.http.post<DeliveryProof>(url, formData).pipe(
+    return this.http.post<DeliveryProof>(url, formData, { withCredentials: true }).pipe(
       map(response => {
         const validationResult = DeliveryProofSchema.safeParse(response);
         if (!validationResult.success) {
@@ -324,7 +314,7 @@ export class ApiClient {
     const operation = `GET ${API_ENDPOINTS.proofs.image(deliveryId)}`;
     const endpoint = API_ENDPOINTS.proofs.image(deliveryId);
 
-    return this.http.get(url, { responseType: 'blob' }).pipe(
+    return this.http.get(url, { responseType: 'blob', withCredentials: true }).pipe(
       switchMap(blob => asDataUrl(blob)),
       catchError(error => handleImageError(error, operation, endpoint, this.errorService))
     );
@@ -389,6 +379,7 @@ export class ApiClient {
 
     const httpOptions = {
       params: httpParams,
+      withCredentials: true,
     };
 
     let request$: Observable<unknown>;
