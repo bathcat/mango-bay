@@ -8,23 +8,23 @@ function Stop-DevelopmentProcesses {
     param(
         [System.Diagnostics.Process]$ApiProcess,
         [System.Diagnostics.Process]$WebProcess,
-        [System.Management.Automation.Job]$ApiTailerJob,
-        [System.Management.Automation.Job]$WebTailerJob
+        [System.Management.Automation.Job]$ApiJob,
+        [System.Management.Automation.Job]$WebJob
     )
     
     Write-Host ""
     Write-Host "Cleaning up processes..." -ForegroundColor Yellow
     
-    if ($ApiTailerJob) {
-        Stop-Job -Job $ApiTailerJob -ErrorAction SilentlyContinue
-        Remove-Job -Job $ApiTailerJob -ErrorAction SilentlyContinue
-        Write-Host "API tailer stopped." -ForegroundColor Gray
+    if ($ApiJob) {
+        Stop-Job -Job $ApiJob -ErrorAction SilentlyContinue
+        Remove-Job -Job $ApiJob -ErrorAction SilentlyContinue
+        Write-Host "API job stopped." -ForegroundColor Gray
     }
     
-    if ($WebTailerJob) {
-        Stop-Job -Job $WebTailerJob -ErrorAction SilentlyContinue
-        Remove-Job -Job $WebTailerJob -ErrorAction SilentlyContinue
-        Write-Host "Web tailer stopped." -ForegroundColor Gray
+    if ($WebJob) {
+        Stop-Job -Job $WebJob -ErrorAction SilentlyContinue
+        Remove-Job -Job $WebJob -ErrorAction SilentlyContinue
+        Write-Host "Web job stopped." -ForegroundColor Gray
     }
     
     if ($ApiProcess -and -not $ApiProcess.HasExited) {
@@ -44,8 +44,8 @@ function Stop-DevelopmentProcesses {
 
 $apiProcess = $null
 $webProcess = $null
-$apiTailerJob = $null
-$webTailerJob = $null
+$apiJob = $null
+$webJob = $null
 
 if (-not $isContainer) {
     $cleanup = Register-EngineEvent -SourceIdentifier PowerShell.Exiting -Action {
@@ -74,7 +74,11 @@ try {
     Write-Host "Starting .NET API in watch mode..." -ForegroundColor Cyan
     
     if ($isContainer) {
-        $apiProcess = Start-Process pwsh -ArgumentList "-Command", "cd '$apiPath'; dotnet watch run" -PassThru -RedirectStandardOutput "$PSScriptRoot/../api-output.log" -RedirectStandardError "$PSScriptRoot/../api-error.log"
+        $apiJob = Start-Job -ScriptBlock {
+            param($Path)
+            Set-Location $Path
+            dotnet watch run 2>&1 | ForEach-Object { @{Type = "API"; Message = $_.ToString() } }
+        } -ArgumentList $apiPath
     }
     else {
         $apiProcess = Start-Process pwsh -ArgumentList "-NoExit", "-Command", "cd '$apiPath'; Write-Host 'API running on http://localhost:5110' -ForegroundColor Green; dotnet watch run" -PassThru
@@ -85,7 +89,11 @@ try {
     Write-Host "Starting Angular Web in watch mode..." -ForegroundColor Cyan
     
     if ($isContainer) {
-        $webProcess = Start-Process pwsh -ArgumentList "-Command", "cd '$webPath'; npm start" -PassThru -RedirectStandardOutput "$PSScriptRoot/../web-output.log" -RedirectStandardError "$PSScriptRoot/../web-error.log"
+        $webJob = Start-Job -ScriptBlock {
+            param($Path)
+            Set-Location $Path
+            npm start 2>&1 | ForEach-Object { @{Type = "WEB"; Message = $_.ToString() } }
+        } -ArgumentList $webPath
     }
     else {
         $webProcess = Start-Process pwsh -ArgumentList "-NoExit", "-Command", "cd '$webPath'; Write-Host 'Web running on http://localhost:4200' -ForegroundColor Green; npm start" -PassThru
@@ -99,25 +107,6 @@ try {
     Write-Host ""
 
     if ($isContainer) {
-        $apiLogPath = "$PSScriptRoot/../api-output.log"
-        $webLogPath = "$PSScriptRoot/../web-output.log"
-        
-        $apiTailerJob = Start-Job -ScriptBlock {
-            param($LogPath, $Prefix)
-            while (-not (Test-Path $LogPath)) { Start-Sleep -Milliseconds 100 }
-            Get-Content $LogPath -Wait | ForEach-Object {
-                @{Type = $Prefix; Message = $_}
-            }
-        } -ArgumentList $apiLogPath, "API"
-        
-        $webTailerJob = Start-Job -ScriptBlock {
-            param($LogPath, $Prefix)
-            while (-not (Test-Path $LogPath)) { Start-Sleep -Milliseconds 100 }
-            Get-Content $LogPath -Wait | ForEach-Object {
-                @{Type = $Prefix; Message = $_}
-            }
-        } -ArgumentList $webLogPath, "WEB"
-        
         Start-Sleep -Milliseconds 500
     }
 
@@ -137,19 +126,19 @@ try {
         $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     }
     else {
-        Write-Host "Processes are running. Press Ctrl+C to stop all processes." -ForegroundColor Gray
+        Write-Host "Jobs are running. Press Ctrl+C to stop all processes." -ForegroundColor Gray
         Write-Host ""
         
         while ($true) {
-            Receive-Job -Job $apiTailerJob -ErrorAction SilentlyContinue | ForEach-Object {
+            Receive-Job -Job $apiJob -ErrorAction SilentlyContinue | ForEach-Object {
                 Write-Host "[$($_.Type)] $($_.Message)" -ForegroundColor Cyan
             }
-            Receive-Job -Job $webTailerJob -ErrorAction SilentlyContinue | ForEach-Object {
+            Receive-Job -Job $webJob -ErrorAction SilentlyContinue | ForEach-Object {
                 Write-Host "[$($_.Type)] $($_.Message)" -ForegroundColor Magenta
             }
             
-            if ($apiProcess.HasExited -or $webProcess.HasExited) {
-                Write-Host "One or more processes have exited unexpectedly." -ForegroundColor Red
+            if ($apiJob.State -eq 'Completed' -or $webJob.State -eq 'Completed' -or $apiJob.State -eq 'Failed' -or $webJob.State -eq 'Failed') {
+                Write-Host "One or more jobs have exited unexpectedly." -ForegroundColor Red
                 break
             }
             Start-Sleep -Milliseconds 100
@@ -160,5 +149,5 @@ finally {
     if (-not $isContainer) {
         Unregister-Event -SourceIdentifier PowerShell.Exiting -ErrorAction SilentlyContinue
     }
-    Stop-DevelopmentProcesses -ApiProcess $apiProcess -WebProcess $webProcess -ApiTailerJob $apiTailerJob -WebTailerJob $webTailerJob
+    Stop-DevelopmentProcesses -ApiProcess $apiProcess -WebProcess $webProcess -ApiJob $apiJob -WebJob $webJob
 }
