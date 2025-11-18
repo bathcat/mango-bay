@@ -17,7 +17,8 @@ function Invoke-GitCommand {
     if ($DryRun) {
         Write-Host "[DRY RUN] $Command" -ForegroundColor Yellow
         return 0
-    } else {
+    }
+    else {
         Write-Host "$ $Command" -ForegroundColor DarkGray
         Invoke-Expression $Command
         return $LASTEXITCODE
@@ -41,11 +42,20 @@ foreach ($branch in $branches) {
         continue
     }
     
-    $exitCode = Invoke-GitCommand "git rebase main"
-    if ($exitCode -ne 0) {
-        Write-Host "Rebase conflict on $branch - stopping here" -ForegroundColor Red
-        Write-Host "Resolve conflicts, then run: git rebase --continue" -ForegroundColor Yellow
-        exit 1
+    if ($DryRun) {
+        Write-Host "[DRY RUN] git rebase main" -ForegroundColor Yellow
+    }
+    else {
+        Write-Host "$ git rebase main" -ForegroundColor DarkGray
+        $rebaseOutput = git rebase main 2>&1
+        $exitCode = $LASTEXITCODE
+        Write-Host $rebaseOutput
+        
+        if ($exitCode -ne 0) {
+            Write-Host "Rebase conflict on $branch - stopping here" -ForegroundColor Red
+            Write-Host "Resolve conflicts, then run: git rebase --continue" -ForegroundColor Yellow
+            exit 1
+        }
     }
     
     $exitCode = Invoke-GitCommand "git push origin $branch --force-with-lease"
