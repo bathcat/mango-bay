@@ -1,10 +1,12 @@
-import { Component, input, output, effect, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, input, output, effect, inject, OnInit, OnDestroy, viewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { CreditCardInfo, CreditCardInfoSchema } from '@app/shared/schemas';
 import { Subject, takeUntil } from 'rxjs';
+import { SampleDataButtonComponent } from '../../../../shared/ui/sample-data-button.component';
+import { TestCreditCardsMenuComponent } from './test-credit-cards-menu.component';
 
 @Component({
   selector: 'mbc-credit-card-info',
@@ -13,7 +15,9 @@ import { Subject, takeUntil } from 'rxjs';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    SampleDataButtonComponent,
+    TestCreditCardsMenuComponent
 ],
   templateUrl: './credit-card-info.component.html',
   styleUrl: './credit-card-info.component.scss',
@@ -21,6 +25,8 @@ import { Subject, takeUntil } from 'rxjs';
 export class CreditCardInfoComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly destroy$ = new Subject<void>();
+
+  testMenuRef = viewChild<TestCreditCardsMenuComponent>('testMenu');
 
   value = input<CreditCardInfo>();
   valueChange = output<CreditCardInfo>();
@@ -190,5 +196,14 @@ export class CreditCardInfoComponent implements OnInit, OnDestroy {
       return 'Name must be at least 3 characters';
     }
     return '';
+  }
+
+  fillCardInfo(cardNumber: string, expiration: string, cvc: string, cardholderName: string): void {
+    this.cardForm.patchValue({
+      cardNumber: this.formatCardNumber(cardNumber),
+      expiration,
+      cvc,
+      cardholderName
+    });
   }
 }

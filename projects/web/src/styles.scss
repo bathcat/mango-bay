@@ -1607,4 +1607,90 @@ mbc-test-accounts-menu {
   }
 }
 
+mbc-test-credit-cards-menu {
+  display: block;
+}
+
+.mat-mdc-menu-panel.test-credit-cards-menu {
+  max-width: none !important;
+  
+  .mat-mdc-menu-content {
+    padding: 0;
+  }
+}
+
+.test-credit-cards-content {
+  padding: 1rem;
+  width: 500px;
+}
+
+.test-credit-cards-title {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.test-credit-cards-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  thead {
+    tr {
+      border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+    }
+    
+    th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+  
+  tbody {
+    tr {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+      }
+    }
+    
+    td {
+      padding: 0.75rem;
+      vertical-align: middle;
+      
+      &:last-child {
+        text-align: center;
+      }
+    }
+  }
+}
+
+.test-credit-cards-menu mat-chip-set {
+  margin: 0;
+}
+
+.test-credit-cards-menu mat-chip {
+  font-size: 0.75rem;
+  min-height: 24px;
+  padding: 4px 8px;
+
+  &.card-good {
+    background-color: #388e3c;
+    color: white;
+  }
+
+  &.card-nsf {
+    background-color: #f57c00;
+    color: white;
+  }
+}
+
 

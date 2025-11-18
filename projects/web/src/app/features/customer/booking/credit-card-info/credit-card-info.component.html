@@ -1,4 +1,13 @@
 <div class="credit-card-form">
+  <div class="form-header">
+    <h3>Payment Information</h3>
+    @if (testMenuRef()?.menu()) {
+      <mbc-sample-data-button 
+        tooltip="Test credit cards"
+        [menu]="testMenuRef()?.menu()">
+      </mbc-sample-data-button>
+    }
+  </div>
   <form [formGroup]="cardForm">
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Card Number</mat-label>
@@ -65,4 +74,9 @@
     </mat-form-field>
   </form>
 </div>
+
+<mbc-test-credit-cards-menu
+  #testMenu
+  (fill)="fillCardInfo($event.cardNumber, $event.expiration, $event.cvc, $event.cardholderName)">
+</mbc-test-credit-cards-menu>
 
