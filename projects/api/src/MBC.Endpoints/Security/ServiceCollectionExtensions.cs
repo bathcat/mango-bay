@@ -86,9 +86,7 @@ public static class ServiceCollectionExtensions
             {
                 if (isCodespaces)
                 {
-                    policy.SetIsOriginAllowed(origin =>
-                          origin.Contains(".github.dev", StringComparison.OrdinalIgnoreCase) ||
-                          origin == frontendSettings.BaseUrl)
+                    policy.AllowAnyOrigin()
                           .AllowCredentials()
                           .AllowAnyMethod()
                           .AllowAnyHeader();
