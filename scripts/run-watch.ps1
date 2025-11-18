@@ -103,20 +103,20 @@ try {
         $webLogPath = "$PSScriptRoot/../web-output.log"
         
         $apiTailerJob = Start-Job -ScriptBlock {
-            param($LogPath)
+            param($LogPath, $Prefix)
             while (-not (Test-Path $LogPath)) { Start-Sleep -Milliseconds 100 }
             Get-Content $LogPath -Wait | ForEach-Object {
-                Write-Host "[API] $_" -ForegroundColor Cyan
+                @{Type = $Prefix; Message = $_}
             }
-        } -ArgumentList $apiLogPath
+        } -ArgumentList $apiLogPath, "API"
         
         $webTailerJob = Start-Job -ScriptBlock {
-            param($LogPath)
+            param($LogPath, $Prefix)
             while (-not (Test-Path $LogPath)) { Start-Sleep -Milliseconds 100 }
             Get-Content $LogPath -Wait | ForEach-Object {
-                Write-Host "[WEB] $_" -ForegroundColor Magenta
+                @{Type = $Prefix; Message = $_}
             }
-        } -ArgumentList $webLogPath
+        } -ArgumentList $webLogPath, "WEB"
         
         Start-Sleep -Milliseconds 500
     }
@@ -141,8 +141,12 @@ try {
         Write-Host ""
         
         while ($true) {
-            Receive-Job -Job $apiTailerJob -ErrorAction SilentlyContinue
-            Receive-Job -Job $webTailerJob -ErrorAction SilentlyContinue
+            Receive-Job -Job $apiTailerJob -ErrorAction SilentlyContinue | ForEach-Object {
+                Write-Host "[$($_.Type)] $($_.Message)" -ForegroundColor Cyan
+            }
+            Receive-Job -Job $webTailerJob -ErrorAction SilentlyContinue | ForEach-Object {
+                Write-Host "[$($_.Type)] $($_.Message)" -ForegroundColor Magenta
+            }
             
             if ($apiProcess.HasExited -or $webProcess.HasExited) {
                 Write-Host "One or more processes have exited unexpectedly." -ForegroundColor Red
