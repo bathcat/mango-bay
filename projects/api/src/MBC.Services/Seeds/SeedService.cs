@@ -111,8 +111,7 @@ public class SeedService : IHostedService
                 scope.ServiceProvider.GetRequiredService<IDeliveryReviewStore>(),
                 scope.ServiceProvider.GetRequiredService<IDeliveryStore>(),
                 mockAuthorizationService,
-                scope.ServiceProvider.GetRequiredService<ILogger<ReviewService>>(),
-                scope.ServiceProvider.GetRequiredService<IHtmlSanitizer>());
+                scope.ServiceProvider.GetRequiredService<ILogger<ReviewService>>());
 
             var deliveryStore = scope.ServiceProvider.GetRequiredService<IDeliveryStore>();
             await SeedReviews(mockReviewService, deliveryStore, customerId);

@@ -29,20 +29,18 @@ public class ReviewService : IReviewService
     private readonly IDeliveryStore _deliveryStore;
     private readonly IMbcAuthorizationService _authorizationService;
     private readonly ILogger<ReviewService> _logger;
-    private readonly IHtmlSanitizer _htmlSanitizer;
+
 
     public ReviewService(
         IDeliveryReviewStore reviewStore,
         IDeliveryStore deliveryStore,
         IMbcAuthorizationService authorizationService,
-        ILogger<ReviewService> logger,
-        IHtmlSanitizer htmlSanitizer)
+        ILogger<ReviewService> logger)
     {
         _reviewStore = reviewStore;
         _deliveryStore = deliveryStore;
         _authorizationService = authorizationService;
         _logger = logger;
-        _htmlSanitizer = htmlSanitizer;
     }
 
     public async Task<DeliveryReview> CreateReview(Guid customerId, Guid deliveryId, Rating rating, string notes)
@@ -77,8 +75,6 @@ public class ReviewService : IReviewService
             throw new InvalidOperationException($"Delivery {deliveryId} has already been reviewed.");
         }
 
-        var sanitizedNotes = _htmlSanitizer.Sanitize(notes);
-
         var review = new DeliveryReview
         {
             Id = Guid.NewGuid(),
@@ -86,7 +82,7 @@ public class ReviewService : IReviewService
             CustomerId = customerId,
             DeliveryId = deliveryId,
             Rating = rating,
-            Notes = sanitizedNotes,
+            Notes = notes,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -114,10 +110,8 @@ public class ReviewService : IReviewService
 
         _authorizationService.ThrowIfUnauthorized(ReviewOperations.Update, review);
 
-        var sanitizedNotes = _htmlSanitizer.Sanitize(notes);
-
         review.Rating = rating;
-        review.Notes = sanitizedNotes;
+        review.Notes = notes;
 
         var updatedReview = await _reviewStore.Update(review);
 
