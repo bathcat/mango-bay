@@ -81,9 +81,7 @@ public static class ServiceCollectionExtensions
         {
             options.AddDefaultPolicy(policy =>
             {
-                policy.SetIsOriginAllowed(origin =>
-                      origin.Contains(".github.dev", StringComparison.OrdinalIgnoreCase) ||
-                      origin == frontendSettings.BaseUrl)
+                policy.SetIsOriginAllowed(origin =>true)
                       .AllowCredentials()
                       .AllowAnyMethod()
                       .AllowAnyHeader();
