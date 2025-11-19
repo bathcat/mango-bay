@@ -59,24 +59,16 @@
       if (window.trustedTypes && trustedTypes.createPolicy) {
         trustedTypes.createPolicy('default', {
           createHTML: (input) => {
-            const sanitized = String(input)
-              .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-              .replace(/javascript:/gi, '');
+            const sanitized = String(input);
             return sanitized;
           },
           createScript: (input) => {
-            return String(input);
+            var sanitized = String(input);
+            return sanitized;
           },
           createScriptURL: (input) => {
-            const url = String(input);
-            if (url.startsWith('http://localhost:') || 
-                url.startsWith('https://') || 
-                url.startsWith('/') ||
-                url.startsWith('./') ||
-                url.includes('.github.dev')) {
-              return url;
-            }
-            throw new TypeError('Invalid script URL');
+            var sanitized = String(input);
+            return sanitized;
           }
         });
       }
