@@ -17,7 +17,7 @@ export class App {
   protected readonly attackLaunched = signal(false);
   protected readonly rotation = signal(0);
   
-  protected readonly targetDeliveryId = 'd0000000-0000-0000-0000-ba1000000001';
+  protected readonly targetDeliveryId = 'b515360b-d7f3-4e83-8941-ec904f08d9ee';
   protected readonly apiEndpoint = 'http://localhost:5110';
 
   async spin() {

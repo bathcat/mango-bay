@@ -16,6 +16,8 @@ namespace MBC.Endpoints.Endpoints;
 
 public static class AuthWebEndpoints
 {
+    private const bool CookieHttpOnly = true;
+    private const SameSiteMode CookieSameSite = SameSiteMode.Unspecified;
 
     public static void MapAuthWebEndpoints(this WebApplication app)
     {
@@ -147,8 +149,8 @@ public static class AuthWebEndpoints
     {
         var accessCookieOptions = new CookieOptions
         {
-            HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
+            HttpOnly = CookieHttpOnly,
+            SameSite = CookieSameSite,
             Path = "/",
             MaxAge = TimeSpan.FromMinutes(jwtSettings.AccessTokenExpirationMinutes),
             Secure = false
@@ -156,8 +158,8 @@ public static class AuthWebEndpoints
 
         var refreshCookieOptions = new CookieOptions
         {
-            HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
+            HttpOnly = CookieHttpOnly,
+            SameSite = CookieSameSite,
             Path = $"{ApiRoutes.AuthWeb}/refresh",
             MaxAge = TimeSpan.FromDays(jwtSettings.RefreshTokenExpirationDays),
             Secure = false
@@ -171,8 +173,8 @@ public static class AuthWebEndpoints
     {
         var accessExpiredOptions = new CookieOptions
         {
-            HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
+            HttpOnly = CookieHttpOnly,
+            SameSite = CookieSameSite,
             Path = "/",
             Expires = DateTimeOffset.UtcNow.AddDays(-1),
             Secure = false
@@ -180,8 +182,8 @@ public static class AuthWebEndpoints
 
         var refreshExpiredOptions = new CookieOptions
         {
-            HttpOnly = true,
-            SameSite = SameSiteMode.Lax,
+            HttpOnly = CookieHttpOnly,
+            SameSite = CookieSameSite,
             Path = $"{ApiRoutes.AuthWeb}/refresh",
             Expires = DateTimeOffset.UtcNow.AddDays(-1),
             Secure = false
