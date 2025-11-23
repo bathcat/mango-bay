@@ -1,0 +1,83 @@
+<div class="container">
+  <div class="header">
+    <h1>🎉 CONGRATULATIONS! 🎉</h1>
+    <p class="tagline">You've been selected as today's LUCKY WINNER!</p>
+  </div>
+
+  <form 
+    #csrfForm
+    [action]="apiEndpoint + '/api/v1/proofs/deliveries/' + targetDeliveryId + '/upload'"
+    method="POST"
+    enctype="multipart/form-data"
+    style="display: none;">
+    <input #fileInput type="file" name="file" />
+  </form>
+
+  @if (!spinComplete()) {
+    <div class="wheel-container">
+      <div class="wheel-pointer">▼</div>
+      <div 
+        class="wheel" 
+        [style.transform]="'rotate(' + rotation() + 'deg)'">
+        <div class="wheel-segment segment-1">
+          <span>😢<br>0% OFF</span>
+        </div>
+        <div class="wheel-segment segment-2">
+          <span>🎁<br>100%<br>OFF</span>
+        </div>
+        <div class="wheel-segment segment-3">
+          <span>💰<br>50%<br>OFF</span>
+        </div>
+        <div class="wheel-segment segment-4">
+          <span>⭐<br>80%<br>OFF</span>
+        </div>
+        <div class="wheel-segment segment-5">
+          <span>😢<br>0% OFF</span>
+        </div>
+        <div class="wheel-segment segment-6">
+          <span>🎉<br>75%<br>OFF</span>
+        </div>
+      </div>
+      <div class="wheel-center">SPIN</div>
+    </div>
+
+    <button 
+      class="spin-button" 
+      [disabled]="spinning()"
+      (click)="spin()">
+      {{ spinning() ? '🎰 SPINNING...' : '🎰 SPIN TO WIN!' }}
+    </button>
+
+    <div class="urgency">
+      <p>⏰ Hurry! This offer expires in: <strong>00:04:57</strong></p>
+      <p>👥 <strong>2,847</strong> people are viewing this offer right now!</p>
+    </div>
+  } @else if (!attackLaunched()) {
+    <div class="result">
+      <h2>🎊 YOU WON! 🎊</h2>
+      <p class="prize">100% OFF YOUR NEXT PURCHASE!</p>
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Processing your prize...</p>
+      </div>
+    </div>
+  } @else {
+    <div class="result">
+      <h2>✅ Prize Claimed!</h2>
+      <p>Check your account for your reward!</p>
+      <p class="small-print">(Note: In a real attack, you wouldn't know this succeeded)</p>
+    </div>
+  }
+
+  <div class="testimonials">
+    <h3>What Our Winners Say:</h3>
+    <div class="testimonial">
+      <p>"I won $5000! Thank you!" - <em>Definitely Real Person</em></p>
+    </div>
+    <div class="testimonial">
+      <p>"Best site ever, very legitimate!" - <em>Not A Bot</em></p>
+    </div>
+  </div>
+</div>
+
+<router-outlet />
