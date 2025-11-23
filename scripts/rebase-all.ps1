@@ -20,8 +20,11 @@ function Invoke-GitCommand {
     }
     else {
         Write-Host "$ $Command" -ForegroundColor DarkGray
-        Invoke-Expression $Command
-        return $LASTEXITCODE
+        $parts = $Command -split " "
+        $cmd = $parts[0]
+        $cmdArgs = $parts[1..($parts.Length-1)]
+        $p = Start-Process -FilePath $cmd -ArgumentList $cmdArgs -Wait -PassThru -NoNewWindow
+        return $p.ExitCode
     }
 }
 
